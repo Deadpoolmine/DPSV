@@ -1,0 +1,1 @@
+1. The first change is to set up "proxy" redirection from React to Flask.
