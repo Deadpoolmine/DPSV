@@ -16,6 +16,13 @@ with open("./sqls/dpsv_create_table.sql", 'r', encoding='UTF-8') as f:
         model_stack.append("""
 from typing import Tuple
 import json
+import datetime 
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+    elif isinstance(o, datetime.timedelta):
+        return o.total_seconds()
 
 class BaseDBObject():
     def __init__(self) -> None:
@@ -25,7 +32,7 @@ class BaseDBObject():
         return "< Base DB OBject " + str(self.__class__) + " >"
 
     def toJson(self):
-        return json.dumps(self.__dict__, ensure_ascii=False)
+        return json.dumps(self.__dict__, ensure_ascii=False, default=default)
 
 """)
         while line != total_stmts_count:

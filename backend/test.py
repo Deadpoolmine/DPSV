@@ -1,8 +1,13 @@
 """
     数据库测试
 """
+import datetime
+from typing import List
 from flask import helpers
 from sqlalchemy import create_engine
+from sqlalchemy.sql.expression import null
+from sqlalchemy.sql.functions import cume_dist
+from models import BaseDBObject, Video
 import config
 
 
@@ -38,10 +43,11 @@ print(engine)
 """
 
 from models import User
-from sqlhelper import SQLStmtCreator
+from sqlhelper import SQLStmtHelper
 
-SQLStmtCreator()
+SQLStmtHelper()
 results = engine.execute('SELECT * FROM USER')
+user = None
 for result in results:
     #print(result)
     user = User(result)
@@ -49,14 +55,36 @@ for result in results:
     #print(user.toJson())
     
     """ 测试插入语句，成功了 """
-    # stmt = SQLStmtCreator().createSQLInsertStmt(user)
+    # stmt = SQLStmtHelper().createSQLInsertStmt(user)
     # engine.execute(stmt)
 
 
 print("\n")
-stmt = SQLStmtCreator.createSQLQueryStmt([User], "user_followers_cnt > 1")
+# stmt = SQLStmtHelper.createSQLQueryStmt([User], "user_followers_cnt > 1")
+# stmt = SQLStmtHelper.createSQLDeleteStmt(user)
+stmt = SQLStmtHelper.createSQLQueryStmt([User])
 print(stmt)
-results = engine.execute(stmt)
-for res in results:
-    print(res)
+# results = engine.execute(stmt)
+# for res in results:
+#     print(res)
 
+res_list : List[User] = SQLStmtHelper.parseSQLExecuteStmt(engine, User, stmt)
+for user in res_list:
+    print(user.user_name)
+
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+    elif isinstance(o, datetime.timedelta):
+        return o.total_seconds()
+
+stmt = SQLStmtHelper.createSQLQueryStmt([Video])
+print(stmt)
+# results = engine.execute(stmt)
+# for res in results:
+#     print(res)
+
+res_list : List[Video] = SQLStmtHelper.parseSQLExecuteStmt(engine, Video, stmt)
+for video in res_list:
+    print(video.toJson())
