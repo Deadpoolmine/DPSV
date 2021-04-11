@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlalchemy.engine.base import Engine
-from models import BaseDBObject
+from models import *
 
 class SQLStmtHelper():
     def __init__(self) -> None:
@@ -19,14 +19,18 @@ class SQLStmtHelper():
         self.video_genre_table = "VideoGenre"
         self.video_video_genre_table = "Video_VideoGenre"
         self.watch_table = "Watch"
+    
+    @staticmethod
+    def createSQLLastIdStmt() -> str:
+        return "SELECT LAST_INSERT_ID();"
 
-    """ 
-        SELECT * FROM [target1, target2 ... ] 
-        Where filter
-        ;
-    """
     @staticmethod
     def createSQLQueryStmt(targets: List[type], filter : str = None) -> str:
+        """ 
+            SELECT * FROM [target1, target2 ... ] 
+            Where filter
+            ;
+        """
         stmt = "SELECT * FROM "
         total_target = len(targets)
         counter = 0
@@ -43,14 +47,13 @@ class SQLStmtHelper():
         stmt = stmt.replace("User", "`User`", -1)
         stmt = stmt.replace("Comment", "`Comment`", -1)
         return stmt
-    """ 
-        INSERT INTO target_table 
-        VALUES (target_value.xx, ...)
-        ;
-    """
+
     @staticmethod
     def createSQLInsertStmt(target_record: BaseDBObject) -> str: 
         """ 
+            INSERT INTO target_table 
+            VALUES (target_value.xx, ...)
+            ;
             生成的过程不需要添加primary id，即跳过第一个 
         """
         target_table_name = type(target_record).__name__
@@ -97,15 +100,18 @@ class SQLStmtHelper():
         stmt = stmt.replace("Comment", "`Comment`", -1)
         return stmt
 
-    """
-        DELETE FROM table_name
-        WHERE id = xx 
-    """
     @staticmethod
-    def createSQLDeleteStmt(target_record: BaseDBObject) -> bool:
-        stmt = "DELETE FROM " + type(target_record).__name__ + "\nWHERE "
-        (target_id_attr, target_id_value) = [item for item in target_record.__dict__.items()][0]
-        stmt += (target_id_attr + " = " + str(target_id_value))
+    def createSQLDeleteStmt(target : type, id : int) -> bool:
+        """
+            DELETE FROM table_name
+            WHERE id = xx 
+        """
+        stmt = "DELETE FROM " + target.__name__ + "\nWHERE "
+        if target in [Favorites, Follow, Message, Reply, Thumb, Video_VideoGenre, Watch]:
+            target_id_attr = "id"
+        else:
+            target_id_attr = target.__name__.lower() + "_id"
+        stmt += (target_id_attr + " = " + str(id))
         stmt = stmt.replace("User", "`User`", -1)
         stmt = stmt.replace("Comment", "`Comment`", -1)
         return stmt
@@ -140,13 +146,7 @@ class SQLStmtHelper():
 
     @staticmethod
     def parseSQLExecuteStmt(engine : Engine, target : type, stmt : str) -> List[BaseDBObject]:
-        res_list : List[BaseDBObject] = []
-        if not issubclass(target, BaseDBObject):
-            if target.__name__ != None:
-                print("< " + target.__name__ + " is not " + BaseDBObject.__name__ + " > ")
-            else:
-                print("< " + target.__class__.__name__ + " is not " + BaseDBObject.__name__ + " > ")
-            return
+        res_list : List[object] = []
         if stmt.strip().find("SELECT") != -1:
             results = engine.execute(stmt)
         else:
@@ -154,5 +154,9 @@ class SQLStmtHelper():
             engine.execute(stmt)
         print(results)
         for res in results:
-            res_list.append(target(res))
+            if issubclass(target, BaseDBObject):
+                res_list.append(target(res))
+            else:
+                res_list.append(res[0])
         return res_list
+    

@@ -9,7 +9,7 @@ def default(o):
     elif isinstance(o, datetime.timedelta):
         return o.total_seconds()
 		
-class BaseDBObject():
+class BaseDBObject(object):
     def __init__(self) -> None:
         pass
     

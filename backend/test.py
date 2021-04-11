@@ -88,3 +88,11 @@ print(stmt)
 res_list : List[Video] = SQLStmtHelper.parseSQLExecuteStmt(engine, Video, stmt)
 for video in res_list:
     print(video.toJson())
+
+
+now = datetime.datetime.now()
+dt_date = now.date()
+dt_time = now.time()
+
+print(dt_date)
+print(dt_time)

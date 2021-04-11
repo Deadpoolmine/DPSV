@@ -1,8 +1,13 @@
 """ 
     此脚本用于自动生成Model
 """
-with open("./sqls/dpsv_create_table.sql", 'r', encoding='UTF-8') as f:
-    with open("./sqls/dpsv_model_generated.py", 'w') as models_f:
+import os
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+src = os.path.join(THIS_FOLDER, 'sqls/dpsv_create_table.sql')
+dst = os.path.join(THIS_FOLDER, 'sqls/dpsv_model_generated.py')
+
+with open(src, 'r', encoding='UTF-8') as f:
+    with open(dst, 'w') as models_f:
         sql_stmts = f.readlines()
         total_stmts_count = len(sql_stmts)
         line = -1
