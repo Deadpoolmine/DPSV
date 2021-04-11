@@ -1,9 +1,13 @@
 
 from typing import List
+from flask.wrappers import Response
 from sqlalchemy.engine.base import Engine
 from models import * 
 from sqlhelper import SQLStmtHelper
 
+
+API_UPLOAD_IMAGE = "/upload_img/<imgname>"
+API_UPLOAD_VIDEO = "/upload_video/<videoname>"
 
 """ 
     用户相关

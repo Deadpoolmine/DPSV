@@ -1,5 +1,6 @@
-import io
-from werkzeug import datastructures
+from werkzeug.datastructures import FileStorage
+from utils import Utils
+from flask.helpers import send_from_directory
 from apimanager import *
 from typing import List
 from models import User
@@ -7,13 +8,14 @@ from flask import Flask, request
 import config
 from sqlalchemy import create_engine
 from sqlhelper import SQLStmtHelper
-from PIL import Image
 
 """ 
     初始化
 """
 app = Flask(__name__)
 app.config.from_object(config)
+utils = Utils(app)
+print(app.config)
 engine = create_engine(config.SQLALCHEMY_DATABASE_URI)
 SQLStmtHelper()
 api_manager = APIManager(engine)
@@ -22,6 +24,14 @@ print(engine)
 """ 
     API区
 """
+@app.route(API_UPLOAD_IMAGE, methods=['POST', 'GET'])
+def uploaded_img(imgname):
+    return send_from_directory(app.config['UPLOAD_FOLDER_IMAGE'], imgname)
+
+@app.route(API_UPLOAD_VIDEO, methods=['POST', 'GET'])
+def uploaded_video(videoname):
+    return send_from_directory(app.config['UPLOAD_FOLDER_VIDEO'], videoname)
+
 #!---------------------------------------------------------------------------------------------
 #!视频相关API
 @app.route(API_GET_VIDEO, methods=['GET', 'POST'])
@@ -163,29 +173,22 @@ def loginUser():
 def getUser(user_id = 1):
     res = api_manager.genericGetItemAPI(User, user_id)
     return res
- 
-def savefile(data, filepath, filename):
-    file = filepath + '\\' + filename
-    with open(file, 'wb') as f:
-        f.write(data)
 
 
 @app.route(API_ADD_USER, methods=['GET','POST'])
 def addUser():
     stmt = ""
-    payload = request.form.to_dict()
-    print(payload)
-    img = request.files.get("myFile")
-    img_byte = Image.open(img.stream)
-    print(img_byte.width)
-    """ request.args.to_dict() """
+    data : dict = request.form.to_dict()
+    img_user_avatar : FileStorage = request.files.get("user_avatar")
+    user_avatar_url = utils.uploadImage(img_user_avatar, img_user_avatar.filename)
+
     #TODO: 改为接受表单
     new_user = ()
-    user_name = "'hello'"
+    user_name = "'PYQ'"
     user_passwd = "'helllll'"
     user_description = "''"
-    user_nickname = "''"
-    user_avatar = img_byte
+    user_nickname = "'单生狗'"
+    user_avatar = "'" + user_avatar_url + "'"
     user_bg = None
     user_followers_cnt = 0
     user_subscribers_cnt = 0

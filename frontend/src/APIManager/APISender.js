@@ -10,10 +10,13 @@ function PostRequest(data, api, callback) {
     for (var key of data.entries()) {
         console.log(key[0] + ', ' + key[1]);
     }
+    /* 测试成功 */
     console.log(API.API_BASE + api);
     fetch(api, requestOptions)
-        .then(response => {
-            callback(response);
+        .then((res) => {
+            return res.json();
+        }).then((res) => {
+            callback(res);
         })
 }
 
