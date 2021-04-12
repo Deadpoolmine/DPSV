@@ -1,0 +1,10 @@
+.home-container {
+    display: flex;
+    
+}
+.test {
+    height: 100px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: aqua;
+}

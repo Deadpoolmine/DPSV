@@ -1,3 +1,4 @@
+//! 注意，带有<xx_id>的API获取方式都可通过GET，其余需要通过FORM
 const API_BASE = "http://localhost:5000"
 //!用户相关
 const API_LOGIN_USER = "/login_user"

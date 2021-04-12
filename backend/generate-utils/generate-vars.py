@@ -43,7 +43,7 @@ with open(src, 'r', encoding='UTF-8') as f:
                         if(sql_stmt.find("primary key") != -1):
                             continue
                         variable_name = sql_stmt.split(" ")[0]
-                        vars_stack.append(variable_name + " = \"''\"\n")
+                        vars_stack.append(variable_name + " = body[" + "'" + variable_name + "'" + "]  \n")
                         cons_stack.append(variable_name + ",")
                         variable_index += 1
                 cons_stack.append(")\n\n")

@@ -1,13 +1,10 @@
 :root {
-    --primary-color: #E6E6E6;
-    --secondary-color: #333333;
-    --secondary-light-color:#7F7F7F;
-    --font-color: #919191;
-    --font-light-color: #FFFFFF;
-    --orange-color:#F8B827;
-    --sqaure-color:#404040;
-    --white-piece:#FFFFFF;
-    --black-piece:#7F7F7F;
+    --primary-color: #F8FAFB;
+    --secondary-color: #FFFFFF;
+    --red-color: #F0304E;
+    --black-color: #1B1D28;
+    --font-color: #9E9FA4;
+    --font-light-color: #CECDD0;
 }
 
 body {

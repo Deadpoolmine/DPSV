@@ -53,22 +53,30 @@ def getVideoByUser(user_id = 1):
 @app.route(API_ADD_VIDEO, methods=['GET', 'POST'])
 def addVideo():
     now = datetime.datetime.now()
+    body : dict = request.form.to_dict()
+
+    img_video_cover : FileStorage = request.files.get("video_cover")
+    video_cover_url = utils.uploadImage(img_video_cover, img_video_cover.filename)
+    
+    video_video_src : FileStorage = request.files.get("video_src")
+    video_src_url = utils.uploadVideo(video_video_src, video_video_src.filename)
+
     video_id = 0
-    bgm_id = 1
-    user_id = 1
-    video_title = "'电音智造'"
-    video_description = "'掉的不谈'"
-    video_src = "'http://caonima.com'"
-    video_cover = "'xx'"
-    video_create_dt = "'" + str(now) +"'"
+    bgm_id = body['bgm_id']     # 1
+    user_id = body['user_id']  
+    video_title = body['video_title']  
+    video_description = body['video_description']  
+    video_src = video_src_url
+    video_cover = video_cover_url
+    video_create_dt = "'" + str(now) +"'" 
     video_update_dt = "'" + str(now) +"'"
     video_delete_dt = "null"
-    video_duration = "'00:03:11'"
-    video_height = 100
-    video_width = 200
-    video_like_cnt = 0
-    video_comment_cnt = 0
-    video_watched_cnt = 0
+    video_duration = body['video_duration']  
+    video_height = body['video_height']   #TODO: body['video_height']  
+    video_width = body['video_width']   #TODO: body['video_width']  
+    video_like_cnt = body['video_like_cnt']   
+    video_comment_cnt = body['video_comment_cnt']   
+    video_watched_cnt = body['video_watched_cnt']  
 
     # VAR_CONSTRUCTOR
     new_video = (video_id, bgm_id,user_id, video_title, video_description, video_src,
@@ -108,6 +116,10 @@ def deleteVideo(video_id = 1):
     """ 
         记得修改on delete restrict为on delete cascade 
     """
+    if request.method == 'POST':
+        body: dict = request.form.to_dict()
+        video_id = body['video_id']
+
     stmt = SQLStmtHelper.createSQLDeleteStmt(Video, video_id)
     print(stmt)
     SQLStmtHelper.parseSQLExecuteStmt(engine, Video, stmt)
@@ -117,22 +129,24 @@ def deleteVideo(video_id = 1):
 @app.route(API_UPDATE_VIDEO, methods=['GET', 'POST'])
 def updateVideo():
     now = datetime.datetime.now()
-    video_id = 1
-    bgm_id = 1
-    user_id = 1
-    video_title = "'电音智造'"
-    video_description = "'掉的不谈'"
-    video_src = "'http://caonima.com'"
-    video_cover = "'xx'"
-    video_create_dt = "'" + str(now) +"'"
+    body : dict = request.form.to_dict()
+
+    video_id = body['video_id']
+    bgm_id = body['bgm_id']     # 1
+    user_id = body['user_id']  
+    video_title = body['video_title']  
+    video_description = body['video_description']  
+    video_src = body['video_src']
+    video_cover = body['video_cover']
+    video_create_dt = body['video_create_dt']  
     video_update_dt = "'" + str(now) +"'"
     video_delete_dt = "null"
-    video_duration = "'00:03:11'"
-    video_height = 100
-    video_width = 200
-    video_like_cnt = 0
-    video_comment_cnt = 0
-    video_watched_cnt = 0
+    video_duration = body['video_duration']  
+    video_height = body['video_height']   #TODO: body['video_height']  
+    video_width = body['video_width']   #TODO: body['video_width']  
+    video_like_cnt = body['video_like_cnt']   
+    video_comment_cnt = body['video_comment_cnt']   
+    video_watched_cnt = body['video_watched_cnt']  
 
     # VAR_CONSTRUCTOR
     new_video = (video_id, bgm_id, user_id, video_title, video_description, video_src,
@@ -145,8 +159,13 @@ def updateVideo():
 def favoriteVideo(user_id = 1, video_id = 1):
     now = datetime.datetime.now() 
     id = 0
-    user_id = user_id
-    video_id = video_id
+    if request.method == 'POST':
+        body : dict = request.form.to_dict()
+        user_id = body['user_id']
+        video_id = body['video_id']
+    else:
+        user_id = user_id
+        video_id = video_id
     favorites_time = "'" + str(now.time()) + "'"
     favorites_date = "'" + str(now.date()) + "'"
     # VAR_CONSTRUCTOR
@@ -157,8 +176,14 @@ def favoriteVideo(user_id = 1, video_id = 1):
 #!用户相关API
 @app.route(API_LOGIN_USER, methods=['GET', 'POST'])
 def loginUser():
-    user_name = str(request.args.get('user_name', None))
-    user_passwd = str(request.args.get('user_passwd', None))
+    if request.method == 'POST':
+        body : dict = request.form.to_dict()
+        user_name = body['user_name']
+        user_passwd = body['user_passwd']
+    else:
+        user_name = str(request.args.get('user_name', None))
+        user_passwd = str(request.args.get('user_passwd', None))
+        
     stmt = SQLStmtHelper.createSQLQueryStmt([User], """
         user_name = {user_name} and 
         user_passwd = {user_passwd}
@@ -175,22 +200,21 @@ def getUser(user_id = 1):
     return res
 
 
-@app.route(API_ADD_USER, methods=['GET','POST'])
+@app.route(API_ADD_USER, methods=['GET', 'POST'])
 def addUser():
-    stmt = ""
-    data : dict = request.form.to_dict()
+    body : dict = request.form.to_dict()
+
     img_user_avatar : FileStorage = request.files.get("user_avatar")
     user_avatar_url = utils.uploadImage(img_user_avatar, img_user_avatar.filename)
 
-    #TODO: 改为接受表单
-    new_user = ()
-    user_name = "'PYQ'"
-    user_passwd = "'helllll'"
-    user_description = "''"
-    user_nickname = "'单生狗'"
+    user_id = 0
+    user_name = body['user_name']  
+    user_passwd = body['user_passwd']  
+    user_description = body['user_description']  
+    user_nickname = body['user_nickname']  
     user_avatar = "'" + user_avatar_url + "'"
-    user_bg = None
-    user_followers_cnt = 0
+    user_bg = body['user_bg']  
+    user_followers_cnt = 0  
     user_subscribers_cnt = 0
 
     stmt = SQLStmtHelper.createSQLQueryStmt([User], """
@@ -203,7 +227,7 @@ def addUser():
     if len(res_list) != 0:
         return APIManager.generateResponse(STAT_FAIL, "", STATEMENT_FOUND_RECORD) 
     else:
-        new_user = (0, user_name, user_passwd, user_description, user_nickname,
+        new_user = (user_id, user_name, user_passwd, user_description, user_nickname,
                     user_avatar, user_bg, user_followers_cnt, user_subscribers_cnt)
         return api_manager.genericAddItemAPI(User, new_user)
     
@@ -250,14 +274,16 @@ def getComments(video_id = 1):
 @app.route(API_COMMENT_VIDEO, methods=['GET', 'POST'])
 def commentVideo():
     now = datetime.datetime.now()
-    video_id = 2
-    user_id = 1
-    comment_content = "'应该从那个地方取'"
-    comment_date = "'" + str(now.date()) + "'"
-    comment_time = "'" + str(now.time()) + "'"
+    body : dict = request.form.to_dict() 
+    comment_id = 0  
+    video_id = body['video_id']  
+    user_id = body['user_id']  
+    comment_content = body['comment_content']  
+    comment_date = "'" + str(now.date()) + "'"  
+    comment_time = "'" + str(now.time()) + "'"  
     comment_reply_cnt = 0
     # VAR_CONSTRUCTOR
-    new_comment = (0,video_id,user_id,comment_content,comment_date,
+    new_comment = (comment_id, video_id,user_id,comment_content,comment_date,
                    comment_time,comment_reply_cnt,)
     return api_manager.genericAddItemAPI(Comment, new_comment)
 
@@ -268,15 +294,19 @@ def replyComment():
         2. 再插入Reply
     """
     now = datetime.datetime.now()
-    video_id = 1
-    user_id = 1
-    comment_content = "'应该从那个地方取'"
-    comment_date = "'" + str(now.date()) + "'"
-    comment_time = "'" + str(now.time()) + "'"
+    body : dict = request.form.to_dict() 
+
+    comment_id = 0  
+    video_id = body['video_id']  
+    user_id = body['user_id']  
+    comment_content = body['comment_content']  
+    comment_date = "'" + str(now.date()) + "'"  
+    comment_time = "'" + str(now.time()) + "'"  
     comment_reply_cnt = 0
+    
     # VAR_CONSTRUCTOR
-    new_comment = (0,video_id,user_id,comment_content,comment_date,
-                   comment_time,comment_reply_cnt,)
+    new_comment = (comment_id, video_id, user_id, comment_content, comment_date,
+                   comment_time, comment_reply_cnt,)
 
     stmt = SQLStmtHelper.createSQLInsertStmt(Comment(new_comment))
     SQLStmtHelper.parseSQLExecuteStmt(engine, Comment, stmt)
@@ -284,11 +314,12 @@ def replyComment():
     stmt = SQLStmtHelper.createSQLLastIdStmt()
     res_list = SQLStmtHelper.parseSQLExecuteStmt(engine, int, stmt)
     
-    reply_comment_id = 1
+    reply_id = 0
+    reply_comment_id = body['reply_comment_id']
     comment_id = res_list[0]
 
     # VAR_CONSTRUCTOR
-    new_reply = (0,reply_comment_id,comment_id,)
+    new_reply = (reply_id, reply_comment_id, comment_id,)
     return api_manager.genericAddItemAPI(Reply, new_reply)
 
 if __name__=='__main__':

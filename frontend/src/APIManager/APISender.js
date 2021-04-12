@@ -15,9 +15,34 @@ function PostRequest(data, api, callback) {
     fetch(api, requestOptions)
         .then((res) => {
             return res.json();
-        }).then((res) => {
-            callback(res);
+        }).then((data) => {
+            callback(data);
         })
 }
 
-export {PostRequest} ;
+/**
+ *
+ *
+ * @param {Array} params
+ * @param {string} api
+ * @param {Function} callback
+ */
+function GetRequest(params, api, callback) {
+    api = api.split("/");
+    var paramsNum = api.length - 2;
+    if(params.length !== paramsNum){
+        alert("GET参数错误");
+        return;
+    }
+    const baseAPI = "/" + api[1];
+    var finalAPI = baseAPI;
+    for (let i = 0; i < params.length; i++) {
+        const param = params[i];
+        finalAPI += ("/" + param);
+    }
+    fetch(finalAPI).then(res => res.json()).then(data => {
+        callback(data)  
+    });
+}
+
+export {PostRequest, GetRequest} ;
