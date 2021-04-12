@@ -14,6 +14,7 @@ class App extends React.Component {
             <main className="main">
                 <Router>
                     <div className='app-conatiner'>
+                        {/* 1 : 12 : 4 */}
                         <SideBar />
                         <div>
                             <NavBar/>

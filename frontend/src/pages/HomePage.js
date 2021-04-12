@@ -9,7 +9,7 @@ import { IconContext } from 'react-icons';
 class HomePage extends React.Component {
     render() {
         return (
-            <div className="scroll">
+            <div className="home-container">
                 <Container>
                     <Row>
                     {

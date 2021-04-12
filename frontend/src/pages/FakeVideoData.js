@@ -1,6 +1,3 @@
-
-import React from 'react'
-
 export const FakeVideoData = [
     {
         title: '小星的房间',
