@@ -8,6 +8,9 @@ import HomePage from './pages/HomePage';
 import Profile from './component/Profile';
 import './App.css'
 import SideBar from './component/SideBar';
+import Message from './pages/Message';
+import Favorites from './pages/Favorites';
+import Settings from './pages/Settings';
 class App extends React.Component {
     render(){
         return (
@@ -16,10 +19,13 @@ class App extends React.Component {
                     <div className='app-conatiner'>
                         {/* 1 : 12 : 4 */}
                         <SideBar />
-                        <div>
+                        <div className="page-container">
                             <NavBar/>
                             <Switch>
                                 <Route path="/" exact component={HomePage} />
+                                <Route path="/Message" component={Message}/>
+                                <Route path="/Favorites" component={Favorites} />
+                                <Route path="/Settings" component={Settings}/>
                             </Switch>
                         </div>
                         <Profile />

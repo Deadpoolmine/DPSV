@@ -5,6 +5,7 @@
     background-color: var(--secondary-color);
     align-items: center;
     justify-content: center;
+    width: 100%;
 
     border: solid 2px var(--primary-color);
     

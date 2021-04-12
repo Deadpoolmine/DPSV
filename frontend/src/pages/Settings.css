@@ -1,4 +1,4 @@
-.favorites-container {
+.setting-container {
     display: flex;
     height: calc(100vh - 80px);
     width: 100%;
@@ -10,6 +10,6 @@
     scrollbar-width: none;  /* Firefox */
 }
 
-.favorites-container::-webkit-scrollbar { 
+.setting-container::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
