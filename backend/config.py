@@ -15,7 +15,8 @@ PASSWORD = 'root'
 UPLOAD_FOLDER = os.getcwd() + "/medias"
 UPLOAD_FOLDER_IMAGE = UPLOAD_FOLDER + "/images"
 UPLOAD_FOLDER_VIDEO = UPLOAD_FOLDER + "/videos"
-MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+# 100MB
+MAX_CONTENT_LENGTH = 100 * 1024 * 1024  
 
 # https://dev.to/blankgodd/connecting-to-a-mysql-database-with-sqlalchemy-lmc
 # 需要安装mysqlconnector

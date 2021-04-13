@@ -1,0 +1,18 @@
+.video-container{
+    width: 100%;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    margin: 3%;
+}
+
+.video-border{
+    width: 103%;
+    height: 103%;
+    position: absolute;
+    border-radius: 20px;
+    border: 10px solid var(--secondary-color);
+    background-color: transparent;
+    pointer-events: none; 
+}

@@ -143,7 +143,7 @@ class Profile extends React.Component {
                             {this.state.user.user_nickname}
                         </div>
 
-                        <Button style={{fontWeight: `bold`}}  
+                        <Button style={{fontWeight: `bold`, fontSize: `0.5em`}}  
                                 variant="dark">
                             编&nbsp;&nbsp;&nbsp;辑
                         </Button>
@@ -172,7 +172,7 @@ class Profile extends React.Component {
                             <div style={{fontWeight:`bold`,  marginBottom: `1em`}}>
                                 个 性 签 名
                             </div>
-                            <div style={{color:`var(--font-light-color)`}}>
+                            <div style={{color:`var(--font-light-color)`, fontSize:`0.7em`}}>
                                 {this.state.user.user_description}
                             </div>
                         </div>
@@ -214,7 +214,7 @@ class Profile extends React.Component {
                             )}>
                             <label
                                 className="upload-overlay" 
-                                for="upload-avatar">
+                                htmlFor="upload-avatar">
                                 <Image
                                     height={100}
                                     width={100}

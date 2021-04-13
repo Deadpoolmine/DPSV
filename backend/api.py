@@ -55,6 +55,8 @@ def addVideo():
     now = datetime.datetime.now()
     body : dict = request.form.to_dict()
 
+    print(body)
+
     img_video_cover : FileStorage = request.files.get("video_cover")
     video_cover_url = utils.uploadImage(img_video_cover, img_video_cover.filename)
     
@@ -64,19 +66,19 @@ def addVideo():
     video_id = 0
     bgm_id = body['bgm_id']     # 1
     user_id = body['user_id']  
-    video_title = body['video_title']  
-    video_description = body['video_description']  
-    video_src = video_src_url
-    video_cover = video_cover_url
+    video_title = "'" + body['video_title'] + "'"  
+    video_description ="'" +  body['video_description'] + "'"  
+    video_src = "'" + video_src_url + "'"
+    video_cover = "'" + video_cover_url + "'"
     video_create_dt = "'" + str(now) +"'" 
     video_update_dt = "'" + str(now) +"'"
     video_delete_dt = "null"
-    video_duration = body['video_duration']  
+    video_duration = "'" + body['video_duration'] + "'"  
     video_height = body['video_height']   #TODO: body['video_height']  
     video_width = body['video_width']   #TODO: body['video_width']  
-    video_like_cnt = body['video_like_cnt']   
-    video_comment_cnt = body['video_comment_cnt']   
-    video_watched_cnt = body['video_watched_cnt']  
+    video_like_cnt = 0 
+    video_comment_cnt = 0   
+    video_watched_cnt = 0  
 
     # VAR_CONSTRUCTOR
     new_video = (video_id, bgm_id,user_id, video_title, video_description, video_src,
