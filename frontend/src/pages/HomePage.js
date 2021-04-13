@@ -5,15 +5,43 @@ import { FakeVideoData } from './FakeVideoData';
 import "./HomePage.css"
 import * as FaIcons from "react-icons/fa"
 import { IconContext } from 'react-icons';
+import { GetRequest } from '../APIManager/APISender';
+import * as API from '../APIManager/API';
 
 class HomePage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        var initData = null; 
+
+        if(initData == null){
+            initData = FakeVideoData;
+        }
+        
+        this.state = {
+            videoData: initData
+        }
+
+        setTimeout(() => {
+            GetRequest([-1], API.API_GET_VIDEO, (res) => {
+                console.log(res);
+                if(res.state === API.STAT_OK){
+                    this.setState({
+ 
+                    });
+                }
+            });
+        }, 1000);
+    }
+
+
     render() {
         return (
             <div className="home-container">
                 <Container>
                     <Row>
                     {
-                        FakeVideoData.map((video, index) => {
+                        this.state.videoData.map((video, index) => {
                             return (
                                 <Col key={index}
                                     md={4} 

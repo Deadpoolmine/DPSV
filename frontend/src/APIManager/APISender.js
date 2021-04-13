@@ -29,7 +29,10 @@ function PostRequest(data, api, callback) {
  */
 function GetRequest(params, api, callback) {
     api = api.split("/");
+    console.log(api);
     var paramsNum = api.length - 2;
+    console.log(paramsNum);
+    console.log(params.length);
     if(params.length !== paramsNum){
         alert("GET参数错误");
         return;

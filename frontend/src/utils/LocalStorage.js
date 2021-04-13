@@ -1,7 +1,6 @@
 const KEY_USERNAME = 'username';
 const KEY_PASSWORD = 'password';
 const KEY_AVATAR = 'avatar';
-const KEY_ISLOGIN = 'islogin'
 
 function GetItem(key) {
     return localStorage.getItem(key);
@@ -38,7 +37,6 @@ function urltoFile(url, filename, mimeType){
 export {
     KEY_USERNAME,
     KEY_PASSWORD,
-    KEY_ISLOGIN,
     KEY_AVATAR,
 
     GetItem, 

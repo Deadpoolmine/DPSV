@@ -178,8 +178,8 @@ def favoriteVideo(user_id = 1, video_id = 1):
 def loginUser():
     if request.method == 'POST':
         body : dict = request.form.to_dict()
-        user_name = body['user_name']
-        user_passwd = body['user_passwd']
+        user_name = "'" + body['user_name'] + "'"
+        user_passwd = "'" + body['user_passwd'] + "'"
     else:
         user_name = str(request.args.get('user_name', None))
         user_passwd = str(request.args.get('user_passwd', None))
@@ -208,12 +208,12 @@ def addUser():
     user_avatar_url = utils.uploadImage(img_user_avatar, img_user_avatar.filename)
 
     user_id = 0
-    user_name = body['user_name']  
-    user_passwd = body['user_passwd']  
-    user_description = body['user_description']  
-    user_nickname = body['user_nickname']  
+    user_name = "'" + body['user_name'] + "'"
+    user_passwd = "'" + body['user_passwd'] + "'"
+    user_description = "'" + body['user_description'] + "'"
+    user_nickname = "'" + body['user_nickname'] + "'"
     user_avatar = "'" + user_avatar_url + "'"
-    user_bg = body['user_bg']  
+    user_bg =  "'" + body['user_bg'] + "'"  
     user_followers_cnt = 0  
     user_subscribers_cnt = 0
 

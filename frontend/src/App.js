@@ -11,6 +11,7 @@ import SideBar from './component/SideBar';
 import Message from './pages/Message';
 import Favorites from './pages/Favorites';
 import Settings from './pages/Settings';
+import UploadPage from './pages/UploadPage';
 class App extends React.Component {
     render(){
         return (
@@ -26,6 +27,7 @@ class App extends React.Component {
                                 <Route path="/Message" component={Message}/>
                                 <Route path="/Favorites" component={Favorites} />
                                 <Route path="/Settings" component={Settings}/>
+                                <Route path="/UploadPage" component={UploadPage} />
                             </Switch>
                         </div>
                         <Profile />

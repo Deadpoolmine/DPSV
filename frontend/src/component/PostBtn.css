@@ -1,0 +1,56 @@
+.postbtn-container{
+    background: rgb(254,80,157);
+    background: radial-gradient(circle, rgba(254,80,157,1) 0%, rgba(252,113,60,1) 100%);
+    width: 100%;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 999;
+    border-radius: 5px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.postbtn-container::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 5%;
+    z-index: -1;
+    height: 110%;
+    width: 90%;
+    opacity: 0.8;
+    border-radius: 50px;
+    
+    /* Declaring our shadow color inherit from the parent (button) */
+    background: inherit;
+    
+    /* Blurring the element for shadow effect */
+    -webkit-filter: blur(6px);
+    -moz-filter: blur(6px);
+    -o-filter: blur(6px);
+    -ms-filter: blur(6px);
+    filter: blur(6px);
+    
+    /* Transition for the magic */
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.postbtn-container:hover::after {
+    /* Changing blur effect */
+    -webkit-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -o-filter: blur(4px);
+    -ms-filter: blur(4px);
+    filter: blur(4px);
+  
+    /* And change the style properties */
+    width: 100%;
+    bottom: -5px;
+    left: 0;
+}

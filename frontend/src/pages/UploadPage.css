@@ -1,0 +1,11 @@
+.upload-container{
+    display: flex;
+    height: calc(100vh - 80px);
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}

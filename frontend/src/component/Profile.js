@@ -6,45 +6,53 @@ import DefaultAvatar from './icons/logo.jpg'
 import UploadOverlay from './icons/upload-avatar.png'
 import * as API from '../APIManager/API'
 import {PostRequest, GetRequest} from '../APIManager/APISender'
+import PostBtn from './PostBtn';
+import { withRouter } from 'react-router';
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
-        var isLogin = LS.GetItem(LS.KEY_ISLOGIN);
         var userAvatar = LS.GetItem(LS.KEY_AVATAR);
         var userName = LS.GetItem(LS.KEY_USERNAME);
         var userPasswd = LS.GetItem(LS.KEY_PASSWORD);
         var userAvatarPreview = null;
-        console.log(userAvatar);
+
         if(userAvatar == null){
             userAvatarPreview = DefaultAvatar;
         }
         else {
             /* base64编码 */
             userAvatarPreview = userAvatar;
-            LS.urltoFile(userAvatar, "cacheAvatar.png", "data:image/png").then((file) => { 
+            LS.urltoFile(userAvatar, Date() + ".png", "data:image/png").then((file) => { 
                 this.state.userAvatar = file;
             });
         }
+
         this.state = {
-            isLogin : isLogin,
+            isLogin : false,
             userAvatar: userAvatar,
             userName : userName,
             userPasswd : userPasswd,
-            userAvatarPreview : userAvatarPreview
+            userAvatarPreview : userAvatarPreview, 
+            user: null
         }    
-
+        
         this.onAvatarChange = this.onAvatarChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleRegister = this.handleRegister.bind(this);
     }
     
     onAvatarChange(e){
-        //console.log(e.target.files[0].size);
         if(e.target.files[0].size > 1024 * 1024){
             alert("图片不能大于1MB");
             return;
         }
+        
+        if(e.target.files[0].name.indexOf(".png") === -1){
+            alert("仅支持PNG格式图片");
+            return;
+        }
+
         this.setState({ 
             userAvatar: e.target.files[0],
             userAvatarPreview : URL.createObjectURL(e.target.files[0])
@@ -62,30 +70,141 @@ class Profile extends React.Component {
     handleLogin(e) {
         var userName = this.state.userName;
         var userPasswd = this.state.userPasswd;
-        GetRequest([userName, userPasswd], API.API_LOGIN_USER, (res) => {
-            
+        var formData = new FormData();
+        formData.append("user_name", userName);
+        formData.append("user_passwd", userPasswd);
+        PostRequest(formData, API.API_LOGIN_USER, (res) => {
+            console.log(res);
+            if(res.state === API.STAT_FAIL){
+                alert("未注册或密码错误");
+                return;
+            }
+            else {
+                this.setState({
+                    isLogin : true,
+                    userName : userName,
+                    userPasswd : userPasswd,
+                    user : res.data
+                }, () => {
+                    window.$User = res.data;
+                    LS.SetItem(LS.KEY_PASSWORD, userPasswd);
+                    LS.SetItem(LS.KEY_USERNAME, userName);
+                    console.log(window.$User);
+                });
+            }
         });
     }
 
     handleRegister(e) {
         console.log(this.state.userAvatar);
+        var userName = this.state.userName;
+        var userPasswd = this.state.userPasswd;
+        var userAvatar = this.state.userAvatar;
+        var formData = new FormData(); 
+        formData.append("user_name", userName);
+        formData.append("user_passwd", userPasswd);
+        formData.append("user_avatar", userAvatar, userAvatar.name);
+        formData.append("user_nickname", "无 名");
+        formData.append("user_description", "这个人很懒，还没有描述~");
+        formData.append("user_bg", "");
+        PostRequest(formData, API.API_ADD_USER, (res) => {
+            console.log(res);
+            if(res.state === API.STAT_OK){
+                alert("注册成功!");
+                window.$User = res.data;
+                LS.SetItem(LS.KEY_PASSWORD, userPasswd);
+                LS.SetItem(LS.KEY_USERNAME, userName);
+                this.setState({
+                    user : res.data
+                });
+                return;
+            }
+            else{
+                alert("用户名不能重复!");
+            }
+        });
     }
     
     renderElement(){
-        if(this.state.isLogin === true){
+        if(this.state.isLogin === true 
+        || this.state.isLogin === 'true'){
             return (
-                <div>
+                <div className="profile-detail-container">
+                    <div className="avatar-border-container">
+                        <Image  
+                            height={100}
+                            width={100}
+                            src={this.state.user.user_avatar} 
+                            roundedCircle />
+                        <div className="avatar-border" />
+                    </div>
+                    <div className="user-info-container">
+                        <div className="user-name">
+                            {this.state.user.user_nickname}
+                        </div>
+
+                        <Button style={{fontWeight: `bold`}}  
+                                variant="dark">
+                            编&nbsp;&nbsp;&nbsp;辑
+                        </Button>
+                        <div className="user-social-info">
+                            <div className="user-social-item-container">
+                                <div className="user-social-item-number">
+                                    {this.state.user.user_subscribers_cnt}
+                                </div>
+                                <div className="user-social-item-descrption">
+                                    订&nbsp;&nbsp;&nbsp;阅
+                                </div>
+                            </div>
+                            <div style={{fontWeight:`bold`, margin:`1em`, fontSize: `1.5em`}}>
+                                ·
+                            </div>
+                            <div className="user-social-item-container">
+                                <div className="user-social-item-number">
+                                    {this.state.user.user_followers_cnt}
+                                </div>
+                                <div className="user-social-item-descrption">
+                                    关&nbsp;&nbsp;&nbsp;注
+                                </div>
+                            </div>
+                        </div>
+                        <div className="user-personal-description-container">
+                            <div style={{fontWeight:`bold`,  marginBottom: `1em`}}>
+                                个 性 签 名
+                            </div>
+                            <div style={{color:`var(--font-light-color)`}}>
+                                {this.state.user.user_description}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style={{height:`30vh`, 
+                                 width:`90%`, 
+                                 display:`flex`, 
+                                 alignItems:`center`,
+                                 justifyContent:`center`}}>
+                        <PostBtn>
+                            <div style={{width:`100%`, display:`flex`, justifyContent:`center`}} onClick={() => {
+                                  this.props.history.push('/UploadPage');
+                            }}>
+                                发&nbsp;&nbsp;&nbsp;布
+                            </div>
+                        </PostBtn>
+                    </div>
                 </div>
             )
         }
         else {
             return (
                 <div className="profile-entry-container">
-                    <div className="avatar-container">
-                        <Image  
-                                height={100}
-                                width={100}
-                                src={this.state.userAvatarPreview} roundedCircle />
+                    <div className="avatar-border-container">
+                        <div className="avatar-container">
+                            <Image  
+                                    height={100}
+                                    width={100}
+                                    src={this.state.userAvatarPreview} roundedCircle />
+                            <div className="avatar-border" />
+                        </div>
                         <OverlayTrigger
                             placement="top"
                             overlay={(
@@ -124,7 +243,7 @@ class Profile extends React.Component {
                                     });
                                 }} />
                             <Form.Text className="text-muted">
-                                DPSV从不会泄漏您的隐私
+                                * 不 超 过 12 位
                             </Form.Text>
                         </Form.Group>
 
@@ -140,9 +259,6 @@ class Profile extends React.Component {
                                 }}  />
                         </Form.Group>
 
-                        <Form.Group >
-                            <Form.Check type="checkbox" label="记住我" />
-                        </Form.Group>
                         <div className="form-footer">
                             <Button 
                                 style={{fontWeight: `bold`}} 
@@ -173,4 +289,4 @@ class Profile extends React.Component {
     }
 }
 
-export default Profile
+export default withRouter(Profile)
