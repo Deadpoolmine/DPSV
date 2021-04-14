@@ -36,9 +36,10 @@ API_FAVORITE_VIDEO = "/favorite_video/<user_id>/<video_id>"
     评论相关
 """
 API_GET_COMMENT = "/get_comments/<video_id>"
+API_GET_COMMENT_BY_ID = "/get_comments_by_id/<comment_id>"
+API_GET_REPLY = "/get_replys/<comment_id>"
 API_COMMENT_VIDEO = "/comment_video/"
 API_REPLY_COMMENT = "/comment_comment/"
-
 
 """ 
     状态码

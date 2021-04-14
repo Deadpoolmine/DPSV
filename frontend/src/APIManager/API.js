@@ -1,3 +1,4 @@
+const API_MAX_SRC_SIZE = 100 * 1024 * 1024;
 //! 注意，带有<xx_id>的API获取方式都可通过GET，其余需要通过FORM
 const API_BASE = "http://localhost:5000"
 //!用户相关
@@ -21,15 +22,18 @@ const API_FAVORITE_VIDEO = "/favorite_video/<user_id>/<video_id>"
 
 //!评论相关
 const API_GET_COMMENT = "/get_comments/<video_id>"
+const API_GET_COMMENT_BY_ID = "/get_comments_by_id/<comment_id>"
+const API_GET_REPLY = "/get_replys/<comment_id>";
 const API_COMMENT_VIDEO = "/comment_video/"
 const API_REPLY_COMMENT = "/comment_comment/"
-
 
 //!状态码
 const STAT_OK = 200
 const STAT_FAIL = 404
 
 export {
+    API_MAX_SRC_SIZE,
+
     API_BASE,
     API_LOGIN_USER,
     API_GET_USER,
@@ -50,8 +54,10 @@ export {
 
     //!评论相关
     API_GET_COMMENT,
+    API_GET_REPLY,
     API_COMMENT_VIDEO,
     API_REPLY_COMMENT,
+    API_GET_COMMENT_BY_ID,
 
 
     //!状态码

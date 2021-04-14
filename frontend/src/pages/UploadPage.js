@@ -42,7 +42,6 @@ class UploadPage extends React.Component {
         });
     }
     
-    
     uploadSrc(){
         document.getElementById("upload-video-src").click();
     }
@@ -52,7 +51,7 @@ class UploadPage extends React.Component {
         var videoSrc = this.state.videoSrc;
         var videoDescirption = this.state.videoDescirption;
         var videoTitle = this.state.videoTitle;
-
+        
         if(videoCover == null)
         {
             alert("请上传封面");
@@ -70,6 +69,12 @@ class UploadPage extends React.Component {
             alert("请填写描述");
             return;
         }
+
+        if(videoSrc.size > API.API_MAX_SRC_SIZE){
+            alert("不得上传大于100MB的文件");
+            return;
+        }
+        
         var formData = new FormData()
         console.log(videoSrc);
         console.log(videoCover);

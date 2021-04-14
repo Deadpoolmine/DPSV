@@ -3,6 +3,7 @@
     width: 100%;
     height: 100%;
 }
+
 .base-card {
     border-radius: 10px;
     background-color: var(--secondary-color);
@@ -19,4 +20,73 @@
 
 .base-card:hover {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.prim-video-cover-container{
+    display: flex;
+    background-color: var(--primary-color);
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.prim-video-cover{
+    width: 100%;
+    height: 200px;
+}
+
+
+.prim-header-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: flex-start;
+    padding: 1em;
+}
+
+.prim-user-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 1em;
+}
+
+
+.prim-footer-container{
+    width: 100%;
+    padding: 1em;   
+}
+
+.prim-action-icons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+    .prim-action-icons > svg{
+        cursor: pointer;
+    }
+
+
+.prim-action-description {
+    font-size: 0.7em;
+    margin: 1em 0;
+    color: var(--black-color);
+    font-family: sans-serif;
+}
+    
+.prim-video-info-container{
+    font-family: Georgia, serif;
+    color: var(--black-color);
+    text-overflow: ellipsis;
+    display: flex;
+    width: 100%;
+}
+
+.prim-video-detail-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 0.5em;
 }

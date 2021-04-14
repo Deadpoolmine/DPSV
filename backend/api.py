@@ -272,6 +272,29 @@ def getComments(video_id = 1):
                                        APIManager.jsonifyList(res_list), 
                                        STATEMENT_FOUND_RECORD)
     return res
+    
+@app.route(API_GET_COMMENT_BY_ID, methods=['GET', 'POST'])
+def getCommentById(comment_id = 1):
+    stmt = SQLStmtHelper.createSQLQueryStmt([Comment], """
+        Comment.comment_id = {comment_id}
+    """.format(comment_id = int(comment_id)))
+    res_list : List[Comment] = SQLStmtHelper.parseSQLExecuteStmt(engine, Comment, stmt)
+    res = APIManager.generateResponse(STAT_OK, 
+                                       APIManager.jsonifyList(res_list), 
+                                       STATEMENT_FOUND_RECORD)
+    return res
+
+@app.route(API_GET_REPLY, methods=['GET', 'POST'])
+def getReply(comment_id = 1):
+    stmt = SQLStmtHelper.createSQLQueryStmt([Reply], """
+        Reply.comment_id = {comment_id}
+    """.format(comment_id = int(comment_id)))
+    res_list : List[Reply] = SQLStmtHelper.parseSQLExecuteStmt(engine, Reply, stmt)
+    res = APIManager.generateResponse(STAT_OK, 
+                                       APIManager.jsonifyList(res_list), 
+                                       STATEMENT_FOUND_RECORD)
+    return res
+
 
 @app.route(API_COMMENT_VIDEO, methods=['GET', 'POST'])
 def commentVideo():
@@ -280,7 +303,7 @@ def commentVideo():
     comment_id = 0  
     video_id = body['video_id']  
     user_id = body['user_id']  
-    comment_content = body['comment_content']  
+    comment_content = "'" + body['comment_content'] + "'"
     comment_date = "'" + str(now.date()) + "'"  
     comment_time = "'" + str(now.time()) + "'"  
     comment_reply_cnt = 0
@@ -301,7 +324,7 @@ def replyComment():
     comment_id = 0  
     video_id = body['video_id']  
     user_id = body['user_id']  
-    comment_content = body['comment_content']  
+    comment_content = "'" + body['comment_content'] + "'"  
     comment_date = "'" + str(now.date()) + "'"  
     comment_time = "'" + str(now.time()) + "'"  
     comment_reply_cnt = 0
@@ -319,10 +342,11 @@ def replyComment():
     reply_id = 0
     reply_comment_id = body['reply_comment_id']
     comment_id = res_list[0]
-
+    print(res_list)
     # VAR_CONSTRUCTOR
-    new_reply = (reply_id, reply_comment_id, comment_id,)
+    new_reply = (reply_id, reply_comment_id, comment_id)
     return api_manager.genericAddItemAPI(Reply, new_reply)
+
 
 if __name__=='__main__':
     app.run()

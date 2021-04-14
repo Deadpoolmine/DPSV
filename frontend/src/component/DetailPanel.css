@@ -1,0 +1,116 @@
+.panel-container {
+    width: 100%;
+    height: calc(100vh - 80px);
+    position: absolute;
+    transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+    visibility: hidden;
+}
+
+.panel-container.active{
+    visibility: visible;
+}
+  
+
+.panel {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.panel-background {
+    background-color: var(--black-color);
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    transition: all 1s cubic-bezier(.25,.8,.25,1);
+}
+
+.panel-background.active {
+    opacity: 0.5;
+}
+
+.panel-body {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 100px);
+    border-radius: 2em 2em 0 0;
+    background-color: var(--secondary-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+    bottom: -100%;
+
+    
+    overflow-y: auto;
+
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.panel-body.active {
+    bottom: 0;
+}
+
+.panel-body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.panel-conatiner{
+    height: 100%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.panel-footer-container{
+    margin: 10px;
+}
+
+
+
+.panel-header-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: flex-start;
+    padding: 1em;
+}
+
+.panel-video-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 1em;
+    width: -1;
+    flex: 1;
+}
+
+.panel-action-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.panel-footer-container{
+    width: 100%;
+    padding: 0 0 1em 0;
+}
+.panel-comment-container{
+    width: 100%;
+}
+
+.panel-check-comment-container{
+    margin-top: 2em;
+}

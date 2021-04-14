@@ -1,12 +1,11 @@
 import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import { BaseCard } from '../component/Card';
+import { BaseCard, PrimaryCard } from '../component/Card';
 import { FakeVideoData } from './FakeVideoData';
 import "./HomePage.css"
-import * as FaIcons from "react-icons/fa"
-import { IconContext } from 'react-icons';
 import { GetRequest } from '../APIManager/APISender';
 import * as API from '../APIManager/API';
+import DetailPanel from '../component/DetailPanel';
 
 class HomePage extends React.Component {
 
@@ -15,11 +14,14 @@ class HomePage extends React.Component {
         var initData = null; 
 
         if(initData == null){
-            initData = FakeVideoData;
+            initData = [];
         }
         
         this.state = {
-            videoData: initData
+            videoData: initData,
+            curVideoData: null,
+            curUser: null,
+            isActivePanel: false
         }
 
         setTimeout(() => {
@@ -27,13 +29,41 @@ class HomePage extends React.Component {
                 console.log(res);
                 if(res.state === API.STAT_OK){
                     this.setState({
- 
+                        videoData: res.data
                     });
                 }
             });
         }, 1000);
+
+        this.handleDetail = this.handleDetail.bind(this);
+        this.togglePanel = this.togglePanel.bind(this);
     }
 
+    handleDetail(video, user){
+        console.log(video);
+        console.log(user);
+        this.setState({
+            curUser: user,
+            curVideoData: video,
+            isActivePanel: true
+        });
+    }
+
+    togglePanel(){
+        var isActivePanel = this.state.isActivePanel; 
+        if(isActivePanel){
+            this.setState({
+                curUser: null,
+                curVideoData: null,
+                isActivePanel: !isActivePanel
+            })
+        }
+        else {
+            this.setState({
+                isActivePanel: !isActivePanel
+            });
+        }
+    }
 
     render() {
         return (
@@ -46,35 +76,24 @@ class HomePage extends React.Component {
                                 <Col key={index}
                                     md={4} 
                                     sm={6}>
-                                    <BaseCard>
-                                        <div className="header-container">
-                                            <div className="user-avatar">
-                                                
-                                            </div>
-                                            <div className="user-info">
-
-                                            </div>
-                                        </div>
-                                        <div className="video-container">
-                                            <video src={video.video_src}/>
-                                        </div>
-                                        <div className="footer-container">
-                                            <div className="action-container">
-                                                <IconContext.Provider value={{color: 'var(--red-color)'}}>
-                                                    <FaIcons.FaHeart/>
-                                                </IconContext.Provider>
-                                            </div>
-                                            <div className="video-info">
-
-                                            </div>
-                                        </div>
-                                    </BaseCard>
+                                    <PrimaryCard 
+                                        onClick={(video, user) => {
+                                            this.handleDetail(video, user);
+                                        }} 
+                                        videoData={video}/>
                                 </Col>
                             )
                         })
                     }
                     </Row>
                 </Container>
+
+                <DetailPanel 
+                    isActivePanel={this.state.isActivePanel}
+                    videoData={this.state.curVideoData}
+                    user={this.state.curUser}
+                    togglePanel={this.togglePanel}
+                    />
             </div>
         )
     }
