@@ -1,5 +1,5 @@
 .panel-container {
-    width: 100%;
+    width: 77%;
     height: calc(100vh - 80px);
     position: absolute;
     transition: all 0.5s cubic-bezier(.25,.8,.25,1);
@@ -23,20 +23,23 @@
 
 
 .panel-background {
+    position: fixed;
     background-color: var(--black-color);
     opacity: 0;
-    height: 100%;
-    width: 100%;
+    width: 77%;
+    height: calc(100vh - 80px);
     transition: all 1s cubic-bezier(.25,.8,.25,1);
+    pointer-events: none;
 }
 
 .panel-background.active {
     opacity: 0.5;
+    pointer-events: inherit;
 }
 
 .panel-body {
-    position: absolute;
-    width: 100%;
+    position: fixed;
+    width: 77%;
     height: calc(100vh - 100px);
     border-radius: 2em 2em 0 0;
     background-color: var(--secondary-color);
@@ -47,7 +50,7 @@
     align-items: center;
 
     transition: all 0.5s cubic-bezier(.25,.8,.25,1);
-    bottom: -100%;
+    bottom: -100vh;
 
     
     overflow-y: auto;
@@ -113,4 +116,13 @@
 
 .panel-check-comment-container{
     margin-top: 2em;
+}
+
+.panel-close-btn{
+    font-size: 1.5em;
+    transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+}
+
+.panel-close-btn:hover{
+    opacity: 0.5;
 }

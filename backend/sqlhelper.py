@@ -21,8 +21,18 @@ class SQLStmtHelper():
         self.watch_table = "Watch"
     
     @staticmethod
-    def createSQLLastIdStmt() -> str:
-        return "SELECT LAST_INSERT_ID();"
+    def createSQLLastIdStmt(target : type) -> str:
+        target_table_name = target.__name__
+        id_attr = ""
+        if target in [Favorites, Follow, Message, Reply, 
+                              Thumb, Video_VideoGenre, Watch]:
+            id_attr = "id"
+        else:
+            id_attr = target_table_name.lower() + "_id"
+        stmt = """
+            SELECT {id} FROM {table} ORDER BY {id} DESC LIMIT 1;
+        """.format(id = id_attr, table = target_table_name)
+        return stmt
 
     @staticmethod
     def createSQLQueryStmt(targets: List[type], filter : str = None) -> str:
@@ -157,6 +167,6 @@ class SQLStmtHelper():
             if issubclass(target, BaseDBObject):
                 res_list.append(target(res))
             else:
-                res_list.append(res[0])
+                res_list.append(res)
         return res_list
     

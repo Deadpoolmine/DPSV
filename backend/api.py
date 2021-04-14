@@ -50,6 +50,20 @@ def getVideoByUser(user_id = 1):
                                        STATEMENT_FOUND_RECORD)
     return res
 
+@app.route(API_GET_FAVORITE_VIDEO, methods=['GET', 'POST'])
+def getFavoritesVideo(user_id = 1):
+    stmt = SQLStmtHelper.createSQLQueryStmt([Video, Favorites], """
+        Favorites.user_id = {user_id} and
+        Video.video_id = Favorites.video_id
+    """.format(user_id = int(user_id)))
+    print(stmt)
+    res_list : List[Video] = SQLStmtHelper.parseSQLExecuteStmt(engine, Video, stmt)
+    res = APIManager.generateResponse(STAT_OK, 
+                                       APIManager.jsonifyList(res_list), 
+                                       STATEMENT_FOUND_RECORD)
+    
+    return res
+
 @app.route(API_ADD_VIDEO, methods=['GET', 'POST'])
 def addVideo():
     now = datetime.datetime.now()
@@ -232,6 +246,30 @@ def addUser():
         new_user = (user_id, user_name, user_passwd, user_description, user_nickname,
                     user_avatar, user_bg, user_followers_cnt, user_subscribers_cnt)
         return api_manager.genericAddItemAPI(User, new_user)
+
+
+@app.route(API_UPDATE_USER, methods=['GET', 'POST'])
+def updateUser():
+    body : dict = request.form.to_dict()
+
+    user_id = body['user_id']
+    user_description = "'" + body['user_description'] + "'"
+    user_nickname = "'" + body['user_nickname'] + "'"
+
+    stmt = SQLStmtHelper.createSQLQueryStmt([User], """
+        user_id = {user_id} 
+    """.format(user_id = user_id))
+
+    print(stmt)
+    res_list : List[User] = SQLStmtHelper.parseSQLExecuteStmt(engine, User, stmt)
+    #!必须找到该用户
+    if len(res_list) != 0:
+        user = res_list[0]
+        new_user = (user.user_id, user.user_name, user.user_passwd, user_description, user_nickname,
+                    user.user_avatar, user.user_bg, user.user_followers_cnt, user.user_subscribers_cnt)
+        return api_manager.genericUpdateItemAPI(User, new_user)
+    else:
+        return APIManager.generateResponse(STAT_FAIL, "", STATEMENT_NOT_FOUND_RECORD) 
     
 @app.route(API_FOLLOW_USER, methods=['GET', 'POST'])
 def followUser(user_id = 1, follow_user_id = 2):
@@ -258,6 +296,19 @@ def followUser(user_id = 1, follow_user_id = 2):
         return APIManager.generateResponse(STAT_FAIL, "", STATEMENT_FOUND_RECORD)
 
     res = api_manager.genericAddItemAPI(Follow, new_follow)
+    return res
+
+@app.route(API_GET_FOLLOWERS, methods=['GET', 'POST'])
+def getFollowers(user_id = 1):
+    stmt = SQLStmtHelper.createSQLQueryStmt([User, Follow], """
+        Follow.user_id = {user_id} and
+        User.user_id = Follow.follow_user_id
+    """.format(user_id = int(user_id)))
+    print(stmt)
+    res_list : List[User] = SQLStmtHelper.parseSQLExecuteStmt(engine, User, stmt)
+    res = APIManager.generateResponse(STAT_OK, 
+                                       APIManager.jsonifyList(res_list), 
+                                       STATEMENT_FOUND_RECORD)
     return res
 
 #!---------------------------------------------------------------------------------------------
@@ -336,17 +387,43 @@ def replyComment():
     stmt = SQLStmtHelper.createSQLInsertStmt(Comment(new_comment))
     SQLStmtHelper.parseSQLExecuteStmt(engine, Comment, stmt)
 
-    stmt = SQLStmtHelper.createSQLLastIdStmt()
+    stmt = SQLStmtHelper.createSQLLastIdStmt(Comment)
     res_list = SQLStmtHelper.parseSQLExecuteStmt(engine, int, stmt)
     
     reply_id = 0
     reply_comment_id = body['reply_comment_id']
-    comment_id = res_list[0]
+    comment_id = res_list[0][0]
     print(res_list)
     # VAR_CONSTRUCTOR
     new_reply = (reply_id, reply_comment_id, comment_id)
     return api_manager.genericAddItemAPI(Reply, new_reply)
 
+#!---------------------------------------------------------------------------------------------
+#!私信相关
+@app.route(API_GET_MESSAGE, methods=['GET', 'POST'])
+def getMessage(user_id = 1, message_user_id = 1):
+    stmt = SQLStmtHelper.createSQLQueryStmt([Message], """
+        Message.user_id = {user_id} and 
+        Message.message_user_id = {message_user_id}  
+    """.format(user_id = int(user_id), message_user_id= int(message_user_id)))
+    res_list : List[Message] = SQLStmtHelper.parseSQLExecuteStmt(engine, Message, stmt)
+    res = APIManager.generateResponse(STAT_OK, 
+                                      APIManager.jsonifyList(res_list), 
+                                       STATEMENT_FOUND_RECORD)
+    return res
 
+@app.route(API_ADD_MESSAGE, methods=['GET', 'POST'])
+def addMessage():
+    now = datetime.datetime.now()
+    body : dict = request.form.to_dict() 
+    id = 0
+    user_id = body['user_id']  
+    message_user_id = body['message_user_id']  
+    message_content = body['message_content']  
+    message_dt = "'" + str(now) + "'"
+    # VAR_CONSTRUCTOR
+    new_message = (id, user_id, message_user_id, message_content, message_dt)
+    return api_manager.genericAddItemAPI(Message, new_message)
+    
 if __name__=='__main__':
     app.run()

@@ -13,3 +13,14 @@
 .message-container::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
+
+.follow-info-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.message-list-container{
+    display: flex;
+    height: 50vh;
+}

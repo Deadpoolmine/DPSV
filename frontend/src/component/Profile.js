@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, OverlayTrigger, Tooltip, Form, FormControl, Button } from 'react-bootstrap';
+import { Image, OverlayTrigger, Tooltip, Form, FormControl, Button, Modal, Container, Row, Col } from 'react-bootstrap';
 import * as LS from '../utils/LocalStorage';
 import './Profile.css'
 import DefaultAvatar from './icons/logo.jpg'
@@ -8,6 +8,72 @@ import * as API from '../APIManager/API'
 import {PostRequest, GetRequest} from '../APIManager/APISender'
 import PostBtn from './PostBtn';
 import { withRouter } from 'react-router';
+import { useState } from 'react';
+
+
+function EditInfoModal(props) {
+    var [nickName, setNickName] = useState("");
+    var [description, setDescription] = useState("");
+
+    return (
+      <Modal
+        {...props}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title style={{fontWeight:`bold`}} id="contained-modal-title-vcenter">
+            编 辑
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form>
+                <Form.Group className="form-group">
+                    <Form.Control 
+                        type="plaintext" 
+                        placeholder="昵 称" 
+                        onChange={(e) => {
+                            console.log(e);
+                            setNickName(e.target.value);
+                        }}/>
+                </Form.Group >
+                <Form.Group className="form-group">
+                    <Form.Control 
+                        type="plaintext" 
+                        placeholder="个 性 签 名" 
+                        onChange={(e) => {
+                            console.log(e);
+                            setDescription(e.target.value);
+                        }}/>
+                </Form.Group >
+            </Form>
+        </Modal.Body>
+        <Modal.Footer>
+            <Container>
+                <Row>
+                    <Col>
+                        <Button style={{fontWeight: `bold`, width: `100%`}} 
+                                variant="dark" 
+                                onClick={() => {
+                            props.onConfirmReply(nickName, description);
+                        }}>
+                            确 定
+                        </Button>
+                    </Col>
+                    <Col>
+                        <Button onClick={props.onHide} 
+                                style={{fontWeight: `bold`, width: `100%`}} 
+                                variant="light" >
+                            取 消
+                        </Button>
+                    </Col>
+                </Row>
+            </Container>
+        </Modal.Footer>
+      </Modal>
+    );
+}
 
 class Profile extends React.Component {
     constructor(props) {
@@ -34,21 +100,23 @@ class Profile extends React.Component {
             userName : userName,
             userPasswd : userPasswd,
             userAvatarPreview : userAvatarPreview, 
-            user: null
+            user: null,
+            modalShow: false
         }    
         
         this.onAvatarChange = this.onAvatarChange.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleRegister = this.handleRegister.bind(this);
+        this.onConfirmReply = this.onConfirmReply.bind(this);
     }
     
     onAvatarChange(e){
+        console.log(e);
         if(e.target.files[0].size > 1024 * 1024){
             alert("图片不能大于1MB");
             return;
         }
-        
-        if(e.target.files[0].name.indexOf(".png") === -1){
+        if(e.target.files[0].name.toLowerCase().indexOf(".png") === -1){
             alert("仅支持PNG格式图片");
             return;
         }
@@ -143,10 +211,13 @@ class Profile extends React.Component {
                             {this.state.user.user_nickname}
                         </div>
 
-                        <Button style={{fontWeight: `bold`, fontSize: `0.5em`}}  
-                                variant="dark">
+                        <Button 
+                            style={{fontWeight: `bold`, fontSize: `0.5em`}}  
+                            variant="dark"
+                            onClick={() => this.setModalShow()}>
                             编&nbsp;&nbsp;&nbsp;辑
                         </Button>
+
                         <div className="user-social-info">
                             <div className="user-social-item-container">
                                 <div className="user-social-item-number">
@@ -279,11 +350,44 @@ class Profile extends React.Component {
             )
         }
     }
-    
+
+    onConfirmReply(nickName, description){
+        var user_id = window.$User.user_id;
+        var formData = new FormData();
+        formData.append("user_id",  user_id);
+        formData.append("user_nickname", nickName);
+        formData.append("user_description", description);
+        PostRequest(formData, API.API_UPDATE_USER, (res) => {
+            var user = this.state.user;
+            user.user_nickname = nickName;
+            user.user_description = description;
+            this.setState({
+                user: user
+            });
+            this.setModalShow();
+        });
+    }
+
+    setModalShow(){
+        if(this.state.modalShow)
+            this.setState({
+                modalShow: false
+            });
+        else
+            this.setState({
+                modalShow: true
+            });
+    }
+
     render(){
         return (
             <div className="profile-container">
                 {this.renderElement()}
+                <EditInfoModal 
+                    onConfirmReply={(nickName, description) => this.onConfirmReply(nickName, description)}
+                    style={{zIndex:9999999}}
+                    show={this.state.modalShow}
+                    onHide={() => this.setModalShow()}/>
             </div>
         )
     }

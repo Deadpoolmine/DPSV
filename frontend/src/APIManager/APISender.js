@@ -16,7 +16,8 @@ function PostRequest(data, api, callback) {
         .then((res) => {
             return res.json();
         }).then((data) => {
-            callback(data);
+            data = JSON.stringify(data).replace(/\'/gi,'')
+            callback(JSON.parse(data))  
         })
 }
 
@@ -43,8 +44,11 @@ function GetRequest(params, api, callback) {
         const param = params[i];
         finalAPI += ("/" + param);
     }
-    fetch(finalAPI).then(res => res.json()).then(data => {
-        callback(data)  
+    fetch(finalAPI).then(res => {
+            return res.json();
+        }).then(data => {
+        data = JSON.stringify(data).replace(/\'/gi,'')
+        callback(JSON.parse(data))  
     });
 }
 

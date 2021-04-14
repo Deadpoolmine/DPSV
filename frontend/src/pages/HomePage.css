@@ -4,14 +4,20 @@
     width: 100%;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto;
+    overflow-y: hidden;
 
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;  /* Firefox */
     position: relative;
 }
 
+.home-container.active{
+    overflow-y: auto;
+}
+
 .home-container::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
+
+
 

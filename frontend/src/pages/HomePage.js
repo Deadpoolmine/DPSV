@@ -7,14 +7,20 @@ import { GetRequest } from '../APIManager/APISender';
 import * as API from '../APIManager/API';
 import DetailPanel from '../component/DetailPanel';
 
+const DEFAULT_DATA = 0;
+const FAVORITE_DATA = 1;
+const SPEC_DATA = 2;
+
 class HomePage extends React.Component {
 
     constructor(props) {
         super(props);
-        var initData = null; 
 
-        if(initData == null){
-            initData = [];
+        var initData = []; 
+        var dataType = DEFAULT_DATA;
+
+        if(props.dataType != null){
+            dataType = props.dataType;
         }
         
         this.state = {
@@ -24,16 +30,33 @@ class HomePage extends React.Component {
             isActivePanel: false
         }
 
-        setTimeout(() => {
-            GetRequest([-1], API.API_GET_VIDEO, (res) => {
-                console.log(res);
-                if(res.state === API.STAT_OK){
-                    this.setState({
-                        videoData: res.data
-                    });
-                }
-            });
-        }, 1000);
+        if(dataType === DEFAULT_DATA){
+            setTimeout(() => {
+                GetRequest([-1], API.API_GET_VIDEO, (res) => {
+                    console.log(res);
+                    if(res.state === API.STAT_OK){
+                        this.setState({
+                            videoData: res.data
+                        });
+                    }
+                });
+            }, 1000);
+        }
+        else if(dataType === FAVORITE_DATA){
+            if(window.$User == null){
+                alert("请先登录");
+            }
+            else {
+                GetRequest([window.$User.user_id], API.API_GET_FAVORITE_VIDEO, (res) => {
+                    console.log(res);
+                    if(res.state === API.STAT_OK){
+                        this.setState({
+                            videoData: res.data
+                        });
+                    }
+                });
+            }
+        }
 
         this.handleDetail = this.handleDetail.bind(this);
         this.togglePanel = this.togglePanel.bind(this);
@@ -67,7 +90,7 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div className="home-container">
+            <div className= {this.state.isActivePanel ? "home-container" : "home-container active"}>
                 <Container>
                     <Row>
                     {
@@ -99,4 +122,4 @@ class HomePage extends React.Component {
     }
 }
 
-export default HomePage
+export {  HomePage , DEFAULT_DATA, SPEC_DATA, FAVORITE_DATA}

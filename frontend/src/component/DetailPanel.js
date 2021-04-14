@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Col, Container, Image, Row,Form,FormControl, Modal } from 'react-bootstrap';
 import BaseVideo from './BaseVideo';
 import * as FaIcons from 'react-icons/fa';
+import * as HiIcons from 'react-icons/hi'
 
 import './DetailPanel.css'
 import { GetRequest, PostRequest } from '../APIManager/APISender';
@@ -28,7 +29,7 @@ function ReplyModal(props) {
                 <Form.Group className="form-group">
                     <Form.Control 
                         type="plaintext" 
-                        placeholder="房 间 名" 
+                        placeholder="回 复 内 容" 
                         onChange={(e) => {
                             console.log(e);
                             setReplyContent(e.target.value);
@@ -67,8 +68,11 @@ function ReplyModal(props) {
 class DetailPanel extends React.Component {
     constructor(props) {
         super(props);
+
         this.handleLike = this.handleLike.bind(this);
         this.handleComment = this.handleComment.bind(this);
+        this.handleFavorites = this.handleFavorites.bind(this);
+        this.handleFollow = this.handleFollow.bind(this);
         this.onConfirmReply = this.onConfirmReply.bind(this);       
 
         this.state = {
@@ -80,7 +84,46 @@ class DetailPanel extends React.Component {
     }
     
     handleLike(){
-        
+        var videoData = this.props.videoData;
+        var video_id = videoData.video_id;
+        if(window.$User == null){
+            alert("请先登录");
+            return;
+        }
+        var user_id = window.$User.user_id;
+        GetRequest([user_id, video_id], API.API_LIKE_VIDEO, (res)=>{
+            alert("点赞成功");
+            videoData.video_like_cnt += 1;
+        });    
+    }
+
+    handleFavorites(){
+        var videoData = this.props.videoData;
+        var video_id = videoData.video_id;
+        if(window.$User == null){
+            alert("请先登录");
+            return;
+        }
+        var user_id = window.$User.user_id;
+        GetRequest([user_id, video_id], API.API_FAVORITE_VIDEO, (res)=>{
+            alert("收藏成功");
+        });    
+    }
+
+    handleFollow(){
+        var user = this.props.user;
+        var follow_user_id = user.user_id;
+        if(window.$User == null){
+            alert("请先登录");
+            return;
+        }
+        var user_id = window.$User.user_id;
+        GetRequest([user_id, follow_user_id], API.API_FOLLOW_USER, (res)=>{
+            if(res.state === API.STAT_OK)
+                alert("关注成功");
+            else
+                alert("不能关注自己");
+        });    
     }
 
     handleComment(){
@@ -125,6 +168,7 @@ class DetailPanel extends React.Component {
     getComments(){
         if(this.props.videoData) {
             GetRequest([this.props.videoData.video_id], API.API_GET_COMMENT , (res) => {
+                console.log(res);
                 this.setState({
                     comments: res.data
                 });
@@ -151,7 +195,7 @@ class DetailPanel extends React.Component {
         formData.append("video_id", this.state.replyComment.video_id);
         formData.append("comment_content", replyContent);
         formData.append("reply_comment_id", this.state.replyComment.comment_id);
-        
+
         PostRequest(formData, API.API_REPLY_COMMENT, (res) => {
             console.log(res);
             this.getComments();
@@ -164,8 +208,14 @@ class DetailPanel extends React.Component {
                 <div className="panel">
                     <div className={this.props.isActivePanel ? "panel-background active" : "panel-background"} onClick={this.props.togglePanel}/>
                     <div className={this.props.isActivePanel ? "panel-body active" : "panel-body"}>
-                        <Container style={{height: `100%`, display:`flex`, justifyContent:`center`}}>
+                        <Container style={{
+                                            height: `100%`, 
+                                            display:`flex`, 
+                                            justifyContent:`center`}}>
                             <div className="panel-conatiner">
+                                <div className="panel-close-btn">
+                                    <FaIcons.FaChevronDown onClick={this.props.togglePanel}/>
+                                </div>
                                 <div className="panel-header-container">
                                     <Image 
                                         height={50}
@@ -177,15 +227,31 @@ class DetailPanel extends React.Component {
                                         <div style={{fontWeight:`bold`, fontSize:`1.3em`}}>
                                             {this.props.videoData?.video_title}
                                         </div>
-                                        <div style={{color:`var(--font-color)`}}>
+                                        <div style={{color:`var(--font-color)`, display:`flex`}}>
+                                            © {this.props.user?.user_nickname} 
+                                            <div style={{fontWeight:`bold`, margin:`0 1em`}}>
+                                                · 
+                                            </div>
                                             {this.props.videoData?.video_description}
                                         </div>
                                     </div>
                                     <div className="panel-action-container">
-                                        <Button variant="light" style={{margin:`0 1em`,display:`flex`, alignItems:`center`, fontWeight:`bold`}}>
+                                        <Button 
+                                            variant="outline-dark" 
+                                            style={{display:`flex`, alignItems:`center`, fontWeight:`bold`}}
+                                            onClick={this.handleFollow}>
+                                            <HiIcons.HiUserAdd/>&nbsp; 关 注
+                                        </Button>
+                                        <Button 
+                                            variant="light" 
+                                            style={{margin:`0 1em`,display:`flex`, alignItems:`center`, fontWeight:`bold`}}
+                                            onClick={this.handleFavorites}>
                                             <FaIcons.FaBookmark/>&nbsp; 收 藏
                                         </Button>
-                                        <Button variant="dark" style={{display:`flex`, alignItems:`center`, fontWeight:`bold`}}>
+                                        <Button 
+                                            variant="dark" 
+                                            style={{display:`flex`, alignItems:`center`, fontWeight:`bold`}}
+                                            onClick={this.handleLike}>
                                             <FaIcons.FaHeart/> &nbsp; 点 赞 
                                         </Button>
                                     </div>
@@ -228,7 +294,7 @@ class DetailPanel extends React.Component {
                                         }
                                     </div>
                                 </div>
-                            </div>  
+                            </div>                          
                         </Container>
                         <ReplyModal 
                             onConfirmReply={(replyContent) => this.onConfirmReply(replyContent)}

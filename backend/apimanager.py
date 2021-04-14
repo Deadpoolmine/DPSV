@@ -2,6 +2,7 @@
 from typing import List
 from flask.wrappers import Response
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.util.langhelpers import constructor_copy
 from models import * 
 from sqlhelper import SQLStmtHelper
 
@@ -16,15 +17,17 @@ API_LOGIN_USER = "/login_user"
 API_GET_USER = "/get_user/<user_id>"
 # http://127.0.0.1:5000/add_user?user_name=%27ZX%27&user_passwd=%27xxx%27
 API_ADD_USER = "/add_user"
+API_UPDATE_USER = "/update_user"
 # http://127.0.0.1:5000/follow_user?user_id=%1%27&follow_user_id=%272%27
 API_FOLLOW_USER = "/follow_user/<user_id>/<follow_user_id>"
-
+API_GET_FOLLOWERS = "/get_followers/<user_id>"
 
 """ 
     视频相关
 """
 API_ADD_VIDEO = "/add_video"
 API_GET_VIDEO = "/get_video/<video_id>"
+API_GET_FAVORITE_VIDEO = "/get_favorite_video/<user_id>"
 API_GET_VIDEO_BY_USER = "/get_video_by_user_id/<user_id>"
 API_LIKE_VIDEO = "/like_video/<user_id>/<video_id>"
 API_WATCH_VIDEO = "/watch_video/<user_id>/<video_id>/<duration>"
@@ -40,6 +43,13 @@ API_GET_COMMENT_BY_ID = "/get_comments_by_id/<comment_id>"
 API_GET_REPLY = "/get_replys/<comment_id>"
 API_COMMENT_VIDEO = "/comment_video/"
 API_REPLY_COMMENT = "/comment_comment/"
+
+"""
+    私信相关
+"""
+API_ADD_MESSAGE = "/add_message"
+API_GET_MESSAGE = "/get_messages/<user_id>/<message_user_id>"
+
 
 """ 
     状态码
@@ -132,14 +142,14 @@ class APIManager():
         SQLStmtHelper.parseSQLExecuteStmt(self.engine, target, stmt)
 
         if target in self.relation_type:
-            new_item_id_attr = "id"
+            new_item_id_attr = target.__name__ + ".id"
         else:
             new_item_id_attr = target.__name__.lower() + "_id" 
         new_item_id_value = 1
 
-        stmt = SQLStmtHelper.createSQLLastIdStmt()
+        stmt = SQLStmtHelper.createSQLLastIdStmt(target)
         res_list = SQLStmtHelper.parseSQLExecuteStmt(self.engine, int, stmt)
-        new_item_id_value = res_list[0]
+        new_item_id_value = res_list[0][0]
 
         stmt = SQLStmtHelper.createSQLQueryStmt([target], new_item_id_attr + " = " +str(new_item_id_value))
         res_list = SQLStmtHelper.parseSQLExecuteStmt(self.engine, target, stmt)

@@ -74,7 +74,7 @@ class UploadPage extends React.Component {
             alert("不得上传大于100MB的文件");
             return;
         }
-        
+
         var formData = new FormData()
         console.log(videoSrc);
         console.log(videoCover);
@@ -90,6 +90,7 @@ class UploadPage extends React.Component {
 
         PostRequest(formData, API.API_ADD_VIDEO, (res) => {
             console.log(res);
+            alert("上传成功");
         });
     }
 
