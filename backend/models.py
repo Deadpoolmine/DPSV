@@ -84,9 +84,9 @@ class Reply(BaseDBObject):
 class Search(BaseDBObject): 
 	def __init__(self, search: Tuple) -> None: 
 		super().__init__()
-		self.research_id = search[0]
+		self.search_id = search[0]
 		self.user_id = search[1]
-		self.research_content = search[2]
+		self.search_content = search[2]
 
 class Thumb(BaseDBObject): 
 	def __init__(self, thumb: Tuple) -> None: 

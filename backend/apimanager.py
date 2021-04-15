@@ -1,8 +1,6 @@
 
 from typing import List
-from flask.wrappers import Response
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.util.langhelpers import constructor_copy
 from models import * 
 from sqlhelper import SQLStmtHelper
 
@@ -34,7 +32,7 @@ API_WATCH_VIDEO = "/watch_video/<user_id>/<video_id>/<duration>"
 API_DELETE_VIDEO = "/delete_video/<video_id>"
 API_UPDATE_VIDEO = "/update_video"
 API_FAVORITE_VIDEO = "/favorite_video/<user_id>/<video_id>"
-
+API_SEARCH_VIDEO = "/search_video"
 """
     评论相关
 """
@@ -50,6 +48,10 @@ API_REPLY_COMMENT = "/comment_comment/"
 API_ADD_MESSAGE = "/add_message"
 API_GET_MESSAGE = "/get_messages/<user_id>/<message_user_id>"
 
+""" 
+    搜索相关
+"""
+API_ADD_SEARCH = "/add_search"
 
 """ 
     状态码

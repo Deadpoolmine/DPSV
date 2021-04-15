@@ -72,13 +72,13 @@
 .prim-action-description {
     font-size: 0.7em;
     margin: 1em 0;
-    color: var(--black-color);
+    color: var(--font-color);
     font-family: sans-serif;
 }
     
 .prim-video-info-container{
     font-family: Georgia, serif;
-    color: var(--black-color);
+    color: var(--font-color);
     text-overflow: ellipsis;
     display: flex;
     width: 100%;

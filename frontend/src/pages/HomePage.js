@@ -3,13 +3,11 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { BaseCard, PrimaryCard } from '../component/Card';
 import { FakeVideoData } from './FakeVideoData';
 import "./HomePage.css"
-import { GetRequest } from '../APIManager/APISender';
+import { GetRequest, PostRequest } from '../APIManager/APISender';
 import * as API from '../APIManager/API';
 import DetailPanel from '../component/DetailPanel';
+import { withRouter } from 'react-router';
 
-const DEFAULT_DATA = 0;
-const FAVORITE_DATA = 1;
-const SPEC_DATA = 2;
 
 class HomePage extends React.Component {
 
@@ -17,10 +15,10 @@ class HomePage extends React.Component {
         super(props);
 
         var initData = []; 
-        var dataType = DEFAULT_DATA;
+        this.dataType = API.DEFAULT_DATA;
 
         if(props.dataType != null){
-            dataType = props.dataType;
+            this.dataType = props.dataType;
         }
         
         this.state = {
@@ -30,21 +28,28 @@ class HomePage extends React.Component {
             isActivePanel: false
         }
 
-        if(dataType === DEFAULT_DATA){
-            setTimeout(() => {
-                GetRequest([-1], API.API_GET_VIDEO, (res) => {
-                    console.log(res);
-                    if(res.state === API.STAT_OK){
-                        this.setState({
-                            videoData: res.data
-                        });
-                    }
-                });
-            }, 1000);
+        this.watcherStart = 0;
+        this.watcherEnd = 0;
+
+        this.handleDetail = this.handleDetail.bind(this);
+        this.togglePanel = this.togglePanel.bind(this);
+    }
+
+    componentDidMount() {
+        if(this.dataType === API.DEFAULT_DATA){
+            GetRequest([-1], API.API_GET_VIDEO, (res) => {
+                console.log(res);
+                if(res.state === API.STAT_OK){
+                    this.setState({
+                        videoData: res.data
+                    });
+                }
+            });
         }
-        else if(dataType === FAVORITE_DATA){
+        else if(this.dataType === API.FAVORITE_DATA){
             if(window.$User == null){
                 alert("请先登录");
+                this.props.history.replace("/");
             }
             else {
                 GetRequest([window.$User.user_id], API.API_GET_FAVORITE_VIDEO, (res) => {
@@ -57,9 +62,29 @@ class HomePage extends React.Component {
                 });
             }
         }
+        else if(this.dataType === API.SPEC_DATA){
+            this.listener = setInterval(() => {
+                var searchContent = this.props.searchContent;
+                var preSearch = window.$PreSearch;
+                if(searchContent === preSearch)
+                    return;
+                window.$PreSearch = searchContent;
+                var formData = new FormData();
+                formData.append("search_content", searchContent);
+                PostRequest(formData, API.API_SEARCH_VIDEO, (res) => {
+                    this.setState({
+                        videoData: res.data
+                    });
+                })
+            }, 1000);
+        }
+    }
+    
+    componentWillUnmount(){
+        if(this.listener)
+            clearInterval(this.listener);
 
-        this.handleDetail = this.handleDetail.bind(this);
-        this.togglePanel = this.togglePanel.bind(this);
+        window.$PreSearch = "";
     }
 
     handleDetail(video, user){
@@ -69,12 +94,19 @@ class HomePage extends React.Component {
             curUser: user,
             curVideoData: video,
             isActivePanel: true
+        }, (res) => {
+            this.watcherStart = new Date().getTime();
         });
     }
 
     togglePanel(){
         var isActivePanel = this.state.isActivePanel; 
         if(isActivePanel){
+            this.watcherEnd = new Date().getTime();
+            var duration = this.watcherEnd - this.watcherStart;
+            if(window.$User)
+                GetRequest([window.$User.user_id, this.state.curVideoData.video_id, duration], API.API_WATCH_VIDEO, (res) => ({
+                }));
             this.setState({
                 curUser: null,
                 curVideoData: null,
@@ -122,4 +154,4 @@ class HomePage extends React.Component {
     }
 }
 
-export {  HomePage , DEFAULT_DATA, SPEC_DATA, FAVORITE_DATA}
+export default withRouter(HomePage);

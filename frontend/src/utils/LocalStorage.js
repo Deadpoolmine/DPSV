@@ -1,6 +1,7 @@
 const KEY_USERNAME = 'username';
 const KEY_PASSWORD = 'password';
 const KEY_AVATAR = 'avatar';
+const KEY_THEME = 'theme';
 
 function GetItem(key) {
     return localStorage.getItem(key);
@@ -38,6 +39,7 @@ export {
     KEY_USERNAME,
     KEY_PASSWORD,
     KEY_AVATAR,
+    KEY_THEME,
 
     GetItem, 
     SetItem, 

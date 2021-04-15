@@ -8,6 +8,7 @@ import './DetailPanel.css'
 import { GetRequest, PostRequest } from '../APIManager/APISender';
 import * as API from '../APIManager/API';
 import Comment from './Comment';
+import { IconContext } from 'react-icons/lib';
 
 function ReplyModal(props) {
     var [replyContent, setReplyContent] = useState("");
@@ -214,7 +215,9 @@ class DetailPanel extends React.Component {
                                             justifyContent:`center`}}>
                             <div className="panel-conatiner">
                                 <div className="panel-close-btn">
-                                    <FaIcons.FaChevronDown onClick={this.props.togglePanel}/>
+                                    <IconContext.Provider value={{color:`var(--font-color)`}}>
+                                        <FaIcons.FaChevronDown onClick={this.props.togglePanel}/>
+                                    </IconContext.Provider>
                                 </div>
                                 <div className="panel-header-container">
                                     <Image 
@@ -224,10 +227,10 @@ class DetailPanel extends React.Component {
                                         roundedCircle
                                         />
                                     <div className="panel-video-info-container">
-                                        <div style={{fontWeight:`bold`, fontSize:`1.3em`}}>
+                                        <div style={{fontWeight:`bold`, fontSize:`1.3em`, color:`var(--font-color)`}}>
                                             {this.props.videoData?.video_title}
                                         </div>
-                                        <div style={{color:`var(--font-color)`, display:`flex`}}>
+                                        <div style={{color:`var(--font-light-color)`, display:`flex`}}>
                                             © {this.props.user?.user_nickname} 
                                             <div style={{fontWeight:`bold`, margin:`0 1em`}}>
                                                 · 

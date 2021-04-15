@@ -1,6 +1,7 @@
 import React from 'react'
 import './Favorites.css'
-import {HomePage,DEFAULT_DATA, FAVORITE_DATA, SPEC_DATA} from './HomePage'
+import HomePage from './HomePage'
+import { FAVORITE_DATA } from '../APIManager/API'
 
 
 class Favorites extends React.Component {

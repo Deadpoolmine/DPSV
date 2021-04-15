@@ -147,10 +147,10 @@ alter table Reply comment 'One Comment could be another''s reply';
 /*==============================================================*/
 create table Search
 (
-   research_id          bigint not null auto_increment,
+   search_id          bigint not null auto_increment,
    user_id              bigint not null,
-   research_content     varchar(100) not null,
-   primary key (research_id)
+   search_content     varchar(100) not null,
+   primary key (search_id)
 );
 
 alter table Search comment 'User Search Results Reserved';

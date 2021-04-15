@@ -74,10 +74,10 @@ class PrimaryCard extends React.Component {
                             roundedCircle />
                     </div>
                     <div className="prim-user-info-container">
-                        <div style={{wordSpacing:1, fontWeight:`bold`, fontSize:`0.9em`}}>
+                        <div style={{wordSpacing:1, fontWeight:`bold`, fontSize:`0.9em`, color:`var(--font-color)`}}>
                             {this.state.user.user_nickname}
                         </div>
-                        <div style={{fontSize:`0.5em`, color:`var(--font-color)`}}>
+                        <div style={{fontSize:`0.5em`, color:`var(--font-light-color)`}}>
                             {this.state.user.user_description}
                         </div>
                     </div>
@@ -97,14 +97,14 @@ class PrimaryCard extends React.Component {
                         </div>
                     </div>
                     <div className="prim-video-info-container">
-                        <div style={{fontWeight:`bold`}}>
+                        <div style={{fontWeight:`bold`, color:`var(--font-color)`}}>
                             "
                         </div>
                         <div className="prim-video-detail-container">
-                            <div style={{fontWeight:`bold`}}>
+                            <div style={{fontWeight:`bold`, color:`var(--font-color)`}}>
                                 {this.state.videoData.video_description}
                             </div>
-                            <div style={{color:`var(--font-color)`, fontSize:`0.7em`}}>
+                            <div style={{color:`var(--font-light-color)`, fontSize:`0.7em`}}>
                                 {this.state.videoData.video_create_dt}
                             </div>
                         </div>

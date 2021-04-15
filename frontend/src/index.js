@@ -8,6 +8,7 @@ import "../node_modules/video-react/dist/video-react.css"; // import css
 
 /* 全局变量 */
 window.$User = null;
+window.$PreSearch = "";
 
 
 ReactDOM.render(<App />, document.getElementById("root"));

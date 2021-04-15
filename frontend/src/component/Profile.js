@@ -227,7 +227,7 @@ class Profile extends React.Component {
                                     订&nbsp;&nbsp;&nbsp;阅
                                 </div>
                             </div>
-                            <div style={{fontWeight:`bold`, margin:`1em`, fontSize: `1.5em`}}>
+                            <div style={{fontWeight:`bold`, margin:`1em`, fontSize: `1.5em`,color:`var(--font-color)`}}>
                                 ·
                             </div>
                             <div className="user-social-item-container">
@@ -240,7 +240,7 @@ class Profile extends React.Component {
                             </div>
                         </div>
                         <div className="user-personal-description-container">
-                            <div style={{fontWeight:`bold`,  marginBottom: `1em`}}>
+                            <div style={{fontWeight:`bold`,  marginBottom: `1em`,color:`var(--font-color)`}}>
                                 个 性 签 名
                             </div>
                             <div style={{color:`var(--font-light-color)`, fontSize:`0.7em`}}>

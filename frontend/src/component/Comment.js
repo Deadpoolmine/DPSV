@@ -55,10 +55,10 @@ class Comment extends React.Component {
                     src={this.state.user?.user_avatar} 
                     roundedCircle />
                 <Media.Body style={{marginLeft:`1em`}}>
-                    <div style={{fontWeight:`bold`}}>
+                    <div style={{fontWeight:`bold`, color:`var(--font-color)`}}>
                         {this.state.user?.user_nickname}
                     </div>
-                    <p style={{color:`var(--font-color)`}}>
+                    <p style={{color:`var(--font-light-color)`}}>
                         {this.state.toUserNickName} {this.state.comment?.comment_content}
                     </p>
                     <div className="comment-footer-container">

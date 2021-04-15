@@ -20,7 +20,7 @@ const API_WATCH_VIDEO = "/watch_video/<user_id>/<video_id>/<duration>"
 const API_DELETE_VIDEO = "/delete_video/<video_id>"
 const API_UPDATE_VIDEO = "/update_video"
 const API_FAVORITE_VIDEO = "/favorite_video/<user_id>/<video_id>"
-
+const API_SEARCH_VIDEO = "/search_video"
 
 //!评论相关
 const API_GET_COMMENT = "/get_comments/<video_id>"
@@ -33,9 +33,17 @@ const API_REPLY_COMMENT = "/comment_comment/"
 const API_ADD_MESSAGE = "/add_message"
 const API_GET_MESSAGE = "/get_messages/<user_id>/<message_user_id>"
 
+//!搜索相关
+const API_ADD_SEARCH = "/add_search"
+
 //!状态码
 const STAT_OK = 200
 const STAT_FAIL = 404
+
+//!首页类型
+const DEFAULT_DATA = 0;
+const FAVORITE_DATA = 1;
+const SPEC_DATA = 2;
 
 export {
     API_MAX_SRC_SIZE,
@@ -59,7 +67,7 @@ export {
     API_DELETE_VIDEO,
     API_UPDATE_VIDEO,
     API_FAVORITE_VIDEO,
-
+    API_SEARCH_VIDEO,
 
     //!评论相关
     API_GET_COMMENT,
@@ -72,6 +80,13 @@ export {
     API_ADD_MESSAGE,
     API_GET_MESSAGE,
 
+    //!搜索相关
+    API_ADD_SEARCH,
+
+    //!首页类型
+    DEFAULT_DATA,
+    FAVORITE_DATA,
+    SPEC_DATA,
 
     //!状态码
     STAT_OK,

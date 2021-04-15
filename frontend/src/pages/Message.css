@@ -23,4 +23,16 @@
 .message-list-container{
     display: flex;
     height: 50vh;
+
+    flex-direction: column;
+    align-items: center;
+
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
 }
+
+.message-list-container::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
