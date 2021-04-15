@@ -15,6 +15,7 @@ import UploadPage from './pages/UploadPage';
 import Search from './pages/Search';
 import * as LS from './utils/LocalStorage';
 import {changeTheme} from './utils/Theme';
+import MyworkPage from './pages/MyworkPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class App extends React.Component {
                                 <Route path="/Favorites" component={Favorites} />
                                 <Route path="/Settings" component={Settings}/>
                                 <Route path="/UploadPage" component={UploadPage} />
+                                <Route path="/Mywork" component={MyworkPage} /> 
                                 <Route path="/Search/:searchContent" component={Search}/>
                             </Switch>
                         </div>

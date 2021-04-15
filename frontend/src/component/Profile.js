@@ -280,7 +280,7 @@ class Profile extends React.Component {
                             placement="top"
                             overlay={(
                                 <Tooltip style={{marginBottom: `10px`}}>
-                                    上传头像
+                                    上 传 头 像
                                 </Tooltip>
                             )}>
                             <label

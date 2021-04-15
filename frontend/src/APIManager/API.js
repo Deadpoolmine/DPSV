@@ -44,6 +44,7 @@ const STAT_FAIL = 404
 const DEFAULT_DATA = 0;
 const FAVORITE_DATA = 1;
 const SPEC_DATA = 2;
+const MY_DATA = 3;
 
 export {
     API_MAX_SRC_SIZE,
@@ -87,6 +88,7 @@ export {
     DEFAULT_DATA,
     FAVORITE_DATA,
     SPEC_DATA,
+    MY_DATA,
 
     //!状态码
     STAT_OK,

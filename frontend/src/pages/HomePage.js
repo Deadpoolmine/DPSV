@@ -25,7 +25,9 @@ class HomePage extends React.Component {
             videoData: initData,
             curVideoData: null,
             curUser: null,
-            isActivePanel: false
+            isActivePanel: false,
+            isEditable: false,
+            isDeletable: false
         }
 
         this.watcherStart = 0;
@@ -78,6 +80,24 @@ class HomePage extends React.Component {
                 })
             }, 1000);
         }
+        else if(this.dataType === API.MY_DATA){
+            if(window.$User == null){
+                alert("请先登录");
+                this.props.history.replace("/");
+            }
+            else {
+                GetRequest([window.$User.user_id], API.API_GET_VIDEO_BY_USER, (res) => {
+                    console.log(res);
+                    if(res.state === API.STAT_OK){
+                        this.setState({
+                            videoData: res.data,
+                            isEditable: true,
+                            isDeletable: true
+                        });
+                    }
+                });
+            }
+        }
     }
     
     componentWillUnmount(){
@@ -99,6 +119,64 @@ class HomePage extends React.Component {
         });
     }
 
+    handleEditVideo(video) {
+        console.log(video);
+        if(video != null){
+            var video_id = video.video_id;
+            var video_title = video.video_title;
+            var video_description = video.video_description;
+
+            var formData = new FormData();
+            formData.append("video_id", video_id);
+            formData.append("video_title", video_title);
+            formData.append("video_description", video_description);
+
+            PostRequest(formData, API.API_UPDATE_VIDEO, (res) => {
+                if(res.state === API.STAT_OK){
+                    alert("修改成功");
+                }
+                else {
+                    alert("修改失败");
+                }
+                GetRequest([window.$User.user_id], API.API_GET_VIDEO_BY_USER, (res) => {
+                    console.log(res);
+                    if(res.state === API.STAT_OK){
+                        this.setState({
+                            videoData: res.data,
+                            isEditable: true,
+                            isDeletable: true
+                        });
+                    }
+                });
+            });
+        }
+    }
+
+    handleDeleteVideo(video) {
+        console.log(video);
+        if(video != null){
+            var video_id = video.video_id;
+            GetRequest([video_id], API.API_DELETE_VIDEO, (res) => {
+                if(res.state === API.STAT_OK){
+                    alert("删除成功");
+                }
+                else{
+                    alert("删除失败");
+                }
+                GetRequest([window.$User.user_id], API.API_GET_VIDEO_BY_USER, (res) => {
+                    console.log(res);
+                    if(res.state === API.STAT_OK){
+                        this.setState({
+                            videoData: res.data,
+                            isEditable: true,
+                            isDeletable: true
+                        });
+                    }
+                });
+            })
+        }
+    }
+    
     togglePanel(){
         var isActivePanel = this.state.isActivePanel; 
         if(isActivePanel){
@@ -128,13 +206,21 @@ class HomePage extends React.Component {
                     {
                         this.state.videoData.map((video, index) => {
                             return (
-                                <Col key={index}
+                                <Col key={video.video_id}
                                     md={4} 
                                     sm={6}>
                                     <PrimaryCard 
                                         onClick={(video, user) => {
                                             this.handleDetail(video, user);
                                         }} 
+                                        isEditable={this.state.isEditable}
+                                        handleEditVideo={(_video) => {
+                                            this.handleEditVideo(_video);
+                                        }}
+                                        isDeletable={this.state.isDeletable}
+                                        handleDeleteVideo={(_video) => {
+                                            this.handleDeleteVideo(_video);
+                                        }}
                                         videoData={video}/>
                                 </Col>
                             )

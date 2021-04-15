@@ -146,30 +146,28 @@ def deleteVideo(video_id = 1):
 def updateVideo():
     now = datetime.datetime.now()
     body : dict = request.form.to_dict()
-
     video_id = body['video_id']
-    bgm_id = body['bgm_id']     # 1
-    user_id = body['user_id']  
-    video_title = body['video_title']  
-    video_description = body['video_description']  
-    video_src = body['video_src']
-    video_cover = body['video_cover']
-    video_create_dt = body['video_create_dt']  
-    video_update_dt = "'" + str(now) +"'"
-    video_delete_dt = "null"
-    video_duration = body['video_duration']  
-    video_height = body['video_height']   #TODO: body['video_height']  
-    video_width = body['video_width']   #TODO: body['video_width']  
-    video_like_cnt = body['video_like_cnt']   
-    video_comment_cnt = body['video_comment_cnt']   
-    video_watched_cnt = body['video_watched_cnt']  
+    video_title = "'" + body['video_title'] + "'"  
+    video_description = "'" + body['video_description'] + "'" 
+    video_update_dt = str(now) 
 
-    # VAR_CONSTRUCTOR
-    new_video = (video_id, bgm_id, user_id, video_title, video_description, video_src,
-                 video_cover, video_create_dt, video_update_dt, video_delete_dt, video_duration,
-                 video_height, video_width, video_like_cnt, video_comment_cnt, video_watched_cnt)
+    stmt = SQLStmtHelper.createSQLQueryStmt([Video], """
+        Video.video_id = {video_id} 
+    """.format(video_id = video_id))
 
-    return api_manager.genericUpdateItemAPI(Video, new_video)
+    print(stmt)
+    res_list : List[Video] = SQLStmtHelper.parseSQLExecuteStmt(engine, Video, stmt)
+    #!必须找到该视频
+    if len(res_list) != 0:
+        video = res_list[0]
+        # VAR_CONSTRUCTOR
+        new_video = (video_id, video.bgm_id, video.user_id, video_title, video_description, video.video_src,
+                     video.video_cover, str(video.video_create_dt), video_update_dt, None, str(video.video_duration),
+                     video.video_height, video.video_width, video.video_like_cnt, video.video_comment_cnt, video.video_watched_cnt)
+        return api_manager.genericUpdateItemAPI(Video, new_video)
+    else:
+        return APIManager.generateResponse(STAT_FAIL, "", STATEMENT_NOT_FOUND_RECORD) 
+
 
 @app.route(API_FAVORITE_VIDEO, methods=['GET','POST'])
 def favoriteVideo(user_id = 1, video_id = 1):
